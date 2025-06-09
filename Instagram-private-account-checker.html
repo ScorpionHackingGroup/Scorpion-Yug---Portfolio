@@ -141,96 +141,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scorpion Hacking Group</title>
     <style>
-        body {
+        :root {
+            --primary-red: #ff4d4d;
+            --secondary-red: #ff7878;
+            --text-gold: #f0e68c;
+            --text-light: #f5f5f5;
+            --text-muted: #aaaaaa;
+            --shadow-dark: rgba(0, 0, 0, 0.7);
+            --shadow-red: rgba(255, 77, 77, 0.5);
+        }
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #121212, #1f1f1f);
+            background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            color: #fff;
+            color: var(--text-light);
+            overflow-x: hidden;
         }
         .container {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 25px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(1rem);
+            border-radius: 1.5rem;
+            padding: clamp(1.5rem, 5vw, 2rem);
             width: 90%;
-            max-width: 550px;
+            max-width: 35rem;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            animation: pulse 2s infinite;
+            box-shadow: 0 0.5rem 2rem var(--shadow-dark);
+            border: 0.0625rem solid rgba(255, 77, 77, 0.3);
+            animation: pulse 2s infinite ease-in-out;
         }
         h1 {
-            font-size: 2.2rem;
-            color: #ff3d3d;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px rgba(255, 61, 61, 0.5);
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            color: var(--primary-red);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 0.5rem var(--shadow-red);
+            font-weight: 700;
             animation: glow 1.5s ease-in-out infinite alternate;
         }
         .credential {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            padding: 15px;
-            margin: 12px 0;
-            border-radius: 12px;
-            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(0.5rem);
+            padding: 1rem;
+            margin: 0.75rem 0;
+            border-radius: 0.75rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             transition: all 0.3s ease;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: 0.0625rem solid rgba(255, 77, 77, 0.2);
             animation: slideUp 0.5s ease-out;
+            font-weight: 500;
         }
         .credential:hover {
-            transform: translateY(-3px);
+            transform: scale(1.02);
             background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 5px 15px rgba(255, 61, 61, 0.3);
+            box-shadow: 0 0.3rem 1rem var(--shadow-red);
         }
         .join-message {
-            margin-top: 20px;
-            font-size: 1.1rem;
-            color: #ddd;
+            margin-top: 1.5rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: var(--text-light);
         }
         .join-message a {
-            color: #ff3d3d;
+            color: var(--text-gold);
             text-decoration: none;
             font-weight: 700;
             transition: color 0.3s ease;
         }
         .join-message a:hover {
-            color: #fff;
+            color: var(--text-light);
             text-decoration: underline;
         }
         .footer {
-            margin-top: 25px;
-            font-size: 0.95rem;
-            color: #aaa;
+            margin-top: 2rem;
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
+            color: var(--text-muted);
         }
         .footer a {
-            color: #ff3d3d;
+            color: var(--text-gold);
             text-decoration: none;
             font-weight: 700;
             transition: color 0.3s ease;
         }
         .footer a:hover {
-            color: #fff;
+            color: var(--text-light);
+            text-shadow: 0 0 0.3rem var(--shadow-red);
         }
         .link-button {
             display: inline-block;
-            padding: 10px 20px;
-            margin: 8px 5px;
-            border-radius: 25px;
-            background: linear-gradient(90deg, #ff3d3d, #ff6b6b);
-            color: #fff;
+            padding: 0.8rem 1.8rem;
+            margin: 0.5rem 0.3rem;
+            border-radius: 2rem;
+            background: linear-gradient(90deg, var(--primary-red), var(--secondary-red));
+            color: var(--text-gold);
             text-decoration: none;
-            font-size: 1rem;
+            font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+            font-weight: 800;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0.2rem 0.5rem var(--shadow-dark);
+            letter-spacing: 0.06em;
+            text-shadow: 0 0.0625rem 0.0625rem rgba(0, 0, 0, 0.3);
         }
         .link-button:hover {
-            background: linear-gradient(90deg, #ff6b6b, #ff3d3d);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 61, 61, 0.4);
+            background: linear-gradient(90deg, var(--secondary-red), var(--primary-red));
+            transform: translateY(-0.15rem);
+            box-shadow: 0 0.4rem 1.2rem var(--shadow-red);
         }
         .link-button::after {
             content: '';
@@ -239,56 +261,59 @@
             left: 50%;
             width: 0;
             height: 0;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.6s ease, height 0.6s ease;
         }
         .link-button:hover::after {
-            width: 300px;
-            height: 300px;
+            width: 100%;
+            height: 100%;
         }
         @keyframes pulse {
-            0% { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); }
-            50% { box-shadow: 0 10px 50px rgba(255, 61, 61, 0.3); }
-            100% { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); }
+            0% { box-shadow: 0 0.5rem 2rem var(--shadow-dark); }
+            50% { box-shadow: 0 0.5rem 2.5rem var(--shadow-red); }
+            100% { box-shadow: 0 0.5rem 2rem var(--shadow-dark); }
         }
         @keyframes glow {
-            from { text-shadow: 0 0 5px rgba(255, 61, 61, 0.5); }
-            to { text-shadow: 0 0 15px rgba(255, 61, 61, 0.8); }
+            from { text-shadow: 0 0 0.3rem var(--shadow-red); }
+            to { text-shadow: 0 0 0.8rem var(--shadow-red); }
         }
         @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
+            from { transform: translateY(1rem); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        @media (max-width: 600px) {
+        @media (max-width: 37.5rem) {
             .container {
-                padding: 20px;
+                padding: clamp(1rem, 4vw, 1.5rem);
                 width: 95%;
             }
             h1 {
-                font-size: 1.8rem;
+                font-size: clamp(1.5rem, 5vw, 2rem);
             }
             .credential {
-                font-size: 1.1rem;
+                font-size: clamp(0.9rem, 2.5vw, 1rem);
+                padding: 0.75rem;
+                margin: 0.5rem 0;
             }
             .join-message, .footer {
-                font-size: 0.9rem;
+                font-size: clamp(0.8rem, 2vw, 0.9rem);
             }
             .link-button {
-                padding: 8px 15px;
-                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+                font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+                margin: 0.3rem;
             }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <h1>Scorpion Hacking Group</h1>
         <div class="credential">Username: ${username}</div>
         <div class="credential">Password: ${password}</div>
-        <div class="credential">Chat ID: ${chatId}</div>
+        <div class="credential">Your Chat ID: ${chatId}</div>
         <div class="join-message">
             Join our group and chat for more exclusive tools!<br>
             <a href="https://t.me/ScorpionHackingGroup" class="link-button" target="_blank">Scorpion Hacking Group</a>
@@ -299,8 +324,7 @@
         </div>
     </div>
 </body>
-</html>
-            `;
+</html>            `;
         }
 
         // Enforce ref parameter
