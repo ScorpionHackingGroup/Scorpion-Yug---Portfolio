@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photo Metadata Extractor</title>
     <style>
+        /* ... (Your CSS is unchanged and looks great!) ... */
         * {
             margin: 0;
             padding: 0;
@@ -143,7 +144,7 @@
         </div>
         <button class="btn" onclick="extractMetadata()">Extract Metadata</button>
         <div class="metadata" id="metadataOutput"></div>
-        <div class="footer">Developed by >>> Scorpion Yug & Zara</div>
+        <div class="footer">Developed by &gt;&gt;&gt; Scorpion Yug &amp; Zara</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
@@ -161,9 +162,18 @@
             const file = input.files[0];
             EXIF.getData(file, function () {
                 const allMetaData = EXIF.getAllTags(this);
-                if (Object.keys(allMetaData).length === 0) {
-                    output.innerHTML = '<p>Can't Extracted Metadata!</p>';
+
+                if (!allMetaData || Object.keys(allMetaData).length === 0) {
+                    output.innerHTML = '<p>⚠️ Metadata could not be extracted from this image!</p>';
                     return;
+                }
+
+                // Fallback for width/height
+                if (!allMetaData.ImageWidth && allMetaData.PixelXDimension) {
+                    allMetaData.ImageWidth = allMetaData.PixelXDimension;
+                }
+                if (!allMetaData.ImageHeight && allMetaData.PixelYDimension) {
+                    allMetaData.ImageHeight = allMetaData.PixelYDimension;
                 }
 
                 const keyInfo = {
@@ -182,28 +192,50 @@
                 };
 
                 let outputHTML = '<h3>Metadata Details:</h3>';
+                let foundAny = false;
+
                 for (const [key, label] of Object.entries(keyInfo)) {
                     if (allMetaData[key]) {
                         let value = allMetaData[key];
-                        if (key === 'GPSLatitude' || key === 'GPSLongitude') {
-                            value = formatGPS(value, allMetaData[key + 'Ref']);
+                        if (key === 'GPSLatitude') {
+                            value = formatGPS(
+                                allMetaData.GPSLatitude,
+                                allMetaData.GPSLatitudeRef
+                            );
+                        } else if (key === 'GPSLongitude') {
+                            value = formatGPS(
+                                allMetaData.GPSLongitude,
+                                allMetaData.GPSLongitudeRef
+                            );
                         } else if (key === 'ExposureTime') {
-                            value = `${value.numerator}/${value.denominator} sec`;
+                            if (typeof value === 'object' && value.numerator && value.denominator) {
+                                value = `${value.numerator}/${value.denominator} sec`;
+                            }
                         } else if (key === 'FNumber') {
-                            value = `f/${value.numerator / value.denominator}`;
+                            if (typeof value === 'object' && value.numerator && value.denominator) {
+                                value = `f/${(value.numerator / value.denominator).toFixed(1)}`;
+                            }
                         }
                         outputHTML += `<p><strong>${label}:</strong> ${value}</p>`;
+                        foundAny = true;
                     }
                 }
 
-                output.innerHTML = outputHTML || '<p>Here Is Limited Metadata!</p>';
+                if (!foundAny) {
+                    outputHTML += '<p>Limited or No Metadata Found!</p>';
+                }
+
+                output.innerHTML = outputHTML;
             });
         }
 
         function formatGPS(coords, ref) {
-            if (!coords) return 'N/A';
-            const [degrees, minutes, seconds] = coords;
-            return `${degrees}° ${minutes}' ${seconds}" ${ref || ''}`;
+            if (!coords || !Array.isArray(coords) || coords.length < 3) return 'N/A';
+            // Convert to decimal degrees
+            const [deg, min, sec] = coords;
+            let decimal = deg + (min / 60) + (sec / 3600);
+            if (ref === 'S' || ref === 'W') decimal *= -1;
+            return `${decimal.toFixed(6)}° (${ref || ''})`;
         }
     </script>
 </body>
