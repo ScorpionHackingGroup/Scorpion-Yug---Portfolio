@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Metadata Extractor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff6f61, #fad0c4);
+            padding: 1rem;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 1.2rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 35rem;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            animation: slideIn 0.6s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+        }
+
+        .input-box {
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        input[type="file"] {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 0.6rem;
+            color: #fff;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.2);
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            background: #ffeb3b;
+            color: #333;
+            border: none;
+            border-radius: 0.6rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-0.3rem);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+        }
+
+        .metadata {
+            margin-top: 2rem;
+            text-align: left;
+            color: #fff;
+            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 1.5rem;
+            border-radius: 0.6rem;
+            max-height: 25rem;
+            overflow-y: auto;
+        }
+
+        .metadata p {
+            margin-bottom: 0.6rem;
+            padding: 0.5rem;
+            border-left: 3px solid #ff6f61;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #fff;
+            opacity: 0.8;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(3rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                max-width: 90%;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .metadata {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Photo Metadata Extractor</h1>
+        <div class="input-box">
+            <input type="file" id="photoInput" accept="image/*" />
+        </div>
+        <button class="btn" onclick="extractMetadata()">Extract Metadata</button>
+        <div class="metadata" id="metadataOutput"></div>
+        <div class="footer">Developed by >>> Scorpion Yug & Zara</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <script>
+        function extractMetadata() {
+            const input = document.getElementById('photoInput');
+            const output = document.getElementById('metadataOutput');
+            output.innerHTML = '';
+
+            if (!input.files || !input.files[0]) {
+                output.innerHTML = '<p>🛡️ Select Photo First</p>';
+                return;
+            }
+
+            const file = input.files[0];
+            EXIF.getData(file, function () {
+                const allMetaData = EXIF.getAllTags(this);
+                if (Object.keys(allMetaData).length === 0) {
+                    output.innerHTML = '<p>Can't Extracted Metadata!</p>';
+                    return;
+                }
+
+                const keyInfo = {
+                    DateTime: 'Date Taken',
+                    Make: 'Camera Make',
+                    Model: 'Camera Model',
+                    GPSLatitude: 'Latitude',
+                    GPSLongitude: 'Longitude',
+                    ISOSpeedRatings: 'ISO Speed',
+                    ExposureTime: 'Exposure Time',
+                    FNumber: 'F-Number',
+                    ImageWidth: 'Width',
+                    ImageHeight: 'Height',
+                    Orientation: 'Orientation',
+                    Software: 'Software'
+                };
+
+                let outputHTML = '<h3>Metadata Details:</h3>';
+                for (const [key, label] of Object.entries(keyInfo)) {
+                    if (allMetaData[key]) {
+                        let value = allMetaData[key];
+                        if (key === 'GPSLatitude' || key === 'GPSLongitude') {
+                            value = formatGPS(value, allMetaData[key + 'Ref']);
+                        } else if (key === 'ExposureTime') {
+                            value = `${value.numerator}/${value.denominator} sec`;
+                        } else if (key === 'FNumber') {
+                            value = `f/${value.numerator / value.denominator}`;
+                        }
+                        outputHTML += `<p><strong>${label}:</strong> ${value}</p>`;
+                    }
+                }
+
+                output.innerHTML = outputHTML || '<p>Here Is Limited Metadata!</p>';
+            });
+        }
+
+        function formatGPS(coords, ref) {
+            if (!coords) return 'N/A';
+            const [degrees, minutes, seconds] = coords;
+            return `${degrees}° ${minutes}' ${seconds}" ${ref || ''}`;
+        }
+    </script>
+</body>
+</html>
