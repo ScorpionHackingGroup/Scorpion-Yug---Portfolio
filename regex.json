@@ -1,0 +1,204 @@
+{
+  "regex_patterns": [
+    {
+      "name": "Cloudinary",
+      "pattern": "cloudinary://.*",
+      "description": "Cloudinary connection URLs"
+    },
+    {
+      "name": "Firebase URL",
+      "pattern": ".*firebaseio\\.com",
+      "description": "Firebase database URLs"
+    },
+    {
+      "name": "Slack Token",
+      "pattern": "(xox[p|b|o|a]-[0-9]{12}-[0-9]{12}-[0-9]{12}-[a-z0-9]{32})",
+      "description": "Slack API tokens"
+    },
+    {
+      "name": "RSA private key",
+      "pattern": "-----BEGIN RSA PRIVATE KEY-----",
+      "description": "RSA private keys"
+    },
+    {
+      "name": "SSH (DSA) private key",
+      "pattern": "-----BEGIN DSA PRIVATE KEY-----",
+      "description": "DSA private keys"
+    },
+    {
+      "name": "SSH (EC) private key",
+      "pattern": "-----BEGIN EC PRIVATE KEY-----",
+      "description": "EC private keys"
+    },
+    {
+      "name": "PGP private key block",
+      "pattern": "-----BEGIN PGP PRIVATE KEY BLOCK-----",
+      "description": "PGP private keys"
+    },
+    {
+      "name": "Amazon AWS Access Key ID",
+      "pattern": "AKIA[0-9A-Z]{16}",
+      "description": "AWS access keys"
+    },
+    {
+      "name": "Amazon MWS Auth Token",
+      "pattern": "amzn\\.mws\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+      "description": "Amazon MWS tokens"
+    },
+    {
+      "name": "AWS API Key",
+      "pattern": "AKIA[0-9A-Z]{16}",
+      "description": "AWS API keys"
+    },
+    {
+      "name": "Facebook Access Token",
+      "pattern": "EAACEdEose0cBA[0-9A-Za-z]+",
+      "description": "Facebook access tokens"
+    },
+    {
+      "name": "Facebook OAuth",
+      "pattern": "[f|F][a|A][c|C][e|E][b|B][o|O][o|O][k|K].*['|\"][0-9a-f]{32}['|\"]",
+      "description": "Facebook OAuth tokens"
+    },
+    {
+      "name": "GitHub",
+      "pattern": "[g|G][i|I][t|T][h|H][u|U][b|B].*['|\"][0-9a-zA-Z]{35,40}['|\"]",
+      "description": "GitHub tokens"
+    },
+    {
+      "name": "Generic API Key",
+      "pattern": "[a|A][p|P][i|I][_]?[k|K][e|E][y|Y].*['|\"][0-9a-zA-Z]{32,45}['|\"]",
+      "description": "Generic API keys"
+    },
+    {
+      "name": "Generic Secret",
+      "pattern": "[s|S][e|E][c|C][r|R][e|E][t|T].*['|\"][0-9a-zA-Z]{32,45}['|\"]",
+      "description": "Generic secrets"
+    },
+    {
+      "name": "Google API Key",
+      "pattern": "AIza[0-9A-Za-z\\-_]{35}",
+      "description": "Google API keys"
+    },
+    {
+      "name": "Google Cloud Platform API Key",
+      "pattern": "AIza[0-9A-Za-z\\-_]{35}",
+      "description": "Google Cloud API keys"
+    },
+    {
+      "name": "Google Cloud Platform OAuth",
+      "pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+      "description": "Google OAuth client IDs"
+    },
+    {
+      "name": "Google Drive API Key",
+      "pattern": "AIza[0-9A-Za-z\\-_]{35}",
+      "description": "Google Drive API keys"
+    },
+    {
+      "name": "Google Drive OAuth",
+      "pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+      "description": "Google Drive OAuth"
+    },
+    {
+      "name": "Google (GCP) Service-account",
+      "pattern": "\"type\": \"service_account\"",
+      "description": "Google service account JSON"
+    },
+    {
+      "name": "Google Gmail API Key",
+      "pattern": "AIza[0-9A-Za-z\\-_]{35}",
+      "description": "Gmail API keys"
+    },
+    {
+      "name": "Google Gmail OAuth",
+      "pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+      "description": "Gmail OAuth"
+    },
+    {
+      "name": "Google OAuth Access Token",
+      "pattern": "ya29\\.[0-9A-Za-z\\-_]+",
+      "description": "Google OAuth tokens"
+    },
+    {
+      "name": "Google YouTube API Key",
+      "pattern": "AIza[0-9A-Za-z\\-_]{35}",
+      "description": "YouTube API keys"
+    },
+    {
+      "name": "Google YouTube OAuth",
+      "pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+      "description": "YouTube OAuth"
+    },
+    {
+      "name": "Heroku API Key",
+      "pattern": "[h|H][e|E][r|R][o|O][k|K][u|U].*[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}",
+      "description": "Heroku API keys"
+    },
+    {
+      "name": "MailChimp API Key",
+      "pattern": "[0-9a-f]{32}-us[0-9]{1,2}",
+      "description": "MailChimp API keys"
+    },
+    {
+      "name": "Mailgun API Key",
+      "pattern": "key-[0-9a-zA-Z]{32}",
+      "description": "Mailgun API keys"
+    },
+    {
+      "name": "Password in URL",
+      "pattern": "[a-zA-Z]{3,10}://[^/\\s:@]{3,20}:[^/\\s:@]{3,20}@.{1,100}[\"'\\s]",
+      "description": "Credentials in URLs"
+    },
+    {
+      "name": "PayPal Braintree Access Token",
+      "pattern": "access_token\\$production\\$[0-9a-z]{16}\\$[0-9a-f]{32}",
+      "description": "Braintree access tokens"
+    },
+    {
+      "name": "Picatic API Key",
+      "pattern": "sk_live_[0-9a-z]{32}",
+      "description": "Picatic API keys"
+    },
+    {
+      "name": "Slack Webhook",
+      "pattern": "https://hooks.slack.com/services/T[a-zA-Z0-9_]{8}/B[a-zA-Z0-9_]{8}/[a-zA-Z0-9_]{24}",
+      "description": "Slack webhook URLs"
+    },
+    {
+      "name": "Stripe API Key",
+      "pattern": "sk_live_[0-9a-zA-Z]{24}",
+      "description": "Stripe API keys"
+    },
+    {
+      "name": "Stripe Restricted API Key",
+      "pattern": "rk_live_[0-9a-zA-Z]{24}",
+      "description": "Stripe restricted keys"
+    },
+    {
+      "name": "Square Access Token",
+      "pattern": "sq0atp-[0-9A-Za-z\\-_]{22}",
+      "description": "Square access tokens"
+    },
+    {
+      "name": "Square OAuth Secret",
+      "pattern": "sq0csp-[0-9A-Za-z\\-_]{43}",
+      "description": "Square OAuth secrets"
+    },
+    {
+      "name": "Twilio API Key",
+      "pattern": "SK[0-9a-fA-F]{32}",
+      "description": "Twilio API keys"
+    },
+    {
+      "name": "Twitter Access Token",
+      "pattern": "[t|T][w|W][i|I][t|T][t|T][e|E][r|R].*[1-9][0-9]+-[0-9a-zA-Z]{40}",
+      "description": "Twitter access tokens"
+    },
+    {
+      "name": "Twitter OAuth",
+      "pattern": "[t|T][w|W][i|I][t|T][t|T][e|E][r|R].*['|\"][0-9a-zA-Z]{35,44}['|\"]",
+      "description": "Twitter OAuth tokens"
+    }
+  ]
+    }
