@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="Dg3y1tW2ZAOxVz8RognWeLz87XZhi3JXssjRylTCKHA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+  <!-- SEO Meta Tags -->
+  <title>Scorpion Hacking Group | Scorpion Yug Portfolio – Ethical Hacker & Web Security Analyst</title>
+  <meta name="description" content="Scorpion Yug – Ethical Hacker, Website Security Analyst, Web Developer, SEO Expert, Singer, and Spiritual Seeker from Madhya Pradesh, India. Founder of Scorpion Hacking Group.">
+  <meta name="keywords" content="Scorpion Hacking Group, Scorpion Yug, ethical hacker, cybersecurity, web security analyst, SEO expert, digital marketing, web developer, hacker India, Madhya Pradesh hacker, Ethereum wallet generator, ExifMetaBot">
+  <meta name="author" content="Scorpion Yug">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://scorpion-yug.netlify.app/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://scorpion-yug.netlify.app/">
+  <meta property="og:title" content="Scorpion Hacking Group | Scorpion Yug Portfolio">
+  <meta property="og:description" content="Scorpion Yug – Ethical Hacker, Website Security Analyst, Web Developer, SEO Expert from India. Founder of Scorpion Hacking Group.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/ScorpionHackingGroup/Images/refs/heads/main/ScorpionHackingGroup_Logo.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Scorpion Hacking Group | Scorpion Yug Portfolio">
+  <meta name="twitter:description" content="Scorpion Yug – Ethical Hacker, Website Security Analyst, Web Developer, SEO Expert from India.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/ScorpionHackingGroup/Images/refs/heads/main/ScorpionHackingGroup_Logo.jpg">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Scorpion Yug",
+    "url": "https://scorpion-yug.netlify.app/",
+    "image": "https://raw.githubusercontent.com/ScorpionHackingGroup/Images/refs/heads/main/IMG_20250501_140125_992.jpg",
+    "description": "Ethical Hacker, Website Security Analyst, Web Developer, SEO Expert, and Spiritual Seeker from Madhya Pradesh, India.",
+    "birthDate": "2007-04-08",
+    "nationality": "Indian",
+    "jobTitle": "Website Security Analyst & Web Developer",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "Madhya Pradesh",
+      "addressCountry": "IN"
+    },
+    "sameAs": [
+      "https://t.me/Scorpion_Yug",
+      "https://t.me/ScorpionHackingGroup"
+    ]
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       RESET & ROOT VARIABLES
+    ===================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #020c08;
+      --bg-secondary: #030f0a;
+      --glass-bg: rgba(0, 255, 140, 0.03);
+      --glass-border: rgba(0, 255, 140, 0.15);
+
+      --neon-green: #00ff8c;
+      --neon-cyan: #00f0ff;
+      --neon-gold: #ffd700;
+      --neon-red: #ff2244;
+      --neon-orange: #ff6600;
+
+      --text-primary: #c8ffd4;
+      --text-muted: rgba(200, 255, 212, 0.5);
+
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-display: 'Orbitron', monospace;
+      --font-body: 'Rajdhani', sans-serif;
+
+      --glow-green: 0 0 8px #00ff8c, 0 0 20px rgba(0, 255, 140, 0.4);
+      --glow-cyan: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.4);
+      --glow-gold: 0 0 8px #ffd700, 0 0 20px rgba(255, 215, 0, 0.4);
+      --glow-red: 0 0 8px #ff2244, 0 0 20px rgba(255, 34, 68, 0.4);
+
+      --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --border-radius: 4px;
+    }
+
+    /* =====================================================
+       SCROLLBAR
+    ===================================================== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--neon-green);
+      border-radius: 3px;
+      box-shadow: var(--glow-green);
+    }
+
+    /* =====================================================
+       BASE STYLES
+    ===================================================== */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      box-shadow: var(--glow-green);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(0, 255, 140, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease, width 0.3s, height 0.3s, border-color 0.3s;
+    }
+    .cursor.hovered { width: 20px; height: 20px; }
+    .cursor-ring.hovered { width: 50px; height: 50px; border-color: var(--neon-cyan); }
+
+    /* =====================================================
+       BACKGROUND EFFECTS
+    ===================================================== */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Grid lines */
+    .bg-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 255, 140, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 140, 0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridShift 20s linear infinite;
+    }
+
+    /* Radial glow */
+    .bg-canvas::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 20%, rgba(0, 255, 140, 0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 70% at 80% 80%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255, 34, 68, 0.03) 0%, transparent 60%);
+    }
+
+    @keyframes gridShift {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    /* Scanline effect */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+      pointer-events: none;
+      animation: scanAnim 8s linear infinite;
+    }
+
+    @keyframes scanAnim {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100vh; }
+    }
+
+    /* Matrix rain canvas */
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.07;
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       LAYOUT
+    ===================================================== */
+    .site-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* =====================================================
+       GLASS / CARD COMPONENT
+    ===================================================== */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 255, 140, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Corner accents */
+    .glass::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 16px; height: 16px;
+      border-top: 2px solid var(--neon-green);
+      border-left: 2px solid var(--neon-green);
+      pointer-events: none;
+    }
+
+    .corner-br {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 16px; height: 16px;
+      border-bottom: 2px solid var(--neon-green);
+      border-right: 2px solid var(--neon-green);
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       GLOW UTILITIES
+    ===================================================== */
+    .glow-green { color: var(--neon-green); text-shadow: var(--glow-green); }
+    .glow-cyan  { color: var(--neon-cyan);  text-shadow: var(--glow-cyan); }
+    .glow-gold  { color: var(--neon-gold);  text-shadow: var(--glow-gold); }
+    .glow-red   { color: var(--neon-red);   text-shadow: var(--glow-red); }
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+    header {
+      border-radius: var(--border-radius);
+      margin: 2rem 0 2.5rem;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      animation: fadeSlideDown 0.8s ease both;
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: var(--glow-cyan), inset 0 0 20px rgba(0, 240, 255, 0.1);
+      flex-shrink: 0;
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: var(--glow-cyan), inset 0 0 20px rgba(0, 240, 255, 0.1); }
+      50% { box-shadow: 0 0 20px #00f0ff, 0 0 50px rgba(0, 240, 255, 0.6), inset 0 0 30px rgba(0, 240, 255, 0.2); }
+    }
+
+    .header-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .header-content h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 3.5vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* =====================================================
+       BUTTONS
+    ===================================================== */
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.55rem 1.2rem;
+      border: 1px solid currentColor;
+      border-radius: 2px;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      background: transparent;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: currentColor;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn:hover::before { opacity: 0.12; }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      letter-spacing: 0.15em;
+    }
+
+    .btn.glow-red { box-shadow: 0 0 6px rgba(255,34,68,0.4); }
+    .btn.glow-red:hover { box-shadow: var(--glow-red); }
+    .btn.glow-cyan { box-shadow: 0 0 6px rgba(0,240,255,0.3); }
+    .btn.glow-cyan:hover { box-shadow: var(--glow-cyan); }
+
+    /* =====================================================
+       TERMINAL HEADER / STATUS BAR
+    ===================================================== */
+    .terminal-bar {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--neon-green);
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .terminal-bar .blink {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: var(--glow-green);
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* =====================================================
+       PROFILE SECTION
+    ===================================================== */
+    .profile {
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2rem;
+      align-items: start;
+      animation: fadeSlideUp 0.9s 0.2s ease both;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 2px solid var(--neon-gold);
+      box-shadow: var(--glow-gold);
+      position: relative;
+      flex-shrink: 0;
+      filter: saturate(1.1) contrast(1.05);
+      transition: var(--transition);
+      clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px);
+    }
+
+    .profile-pic:hover {
+      box-shadow: 0 0 20px var(--neon-gold), 0 0 60px rgba(255, 215, 0, 0.5);
+      transform: scale(1.02);
+    }
+
+    .profile-details h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .profile-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+
+    .profile-link {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid currentColor;
+      border-radius: 2px;
+      transition: var(--transition);
+      opacity: 0.85;
+    }
+
+    .profile-link:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Info list */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.5rem 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .info-item {
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(0, 255, 140, 0.08);
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .info-item .label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--neon-green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .info-item .value {
+      color: rgba(200, 255, 212, 0.85);
+    }
+
+    .info-item.wide {
+      grid-column: 1 / -1;
+    }
+
+    /* =====================================================
+       HACKERS STUFF SECTION
+    ===================================================== */
+    .stuff-section {
+      animation: fadeSlideUp 1s 0.4s ease both;
+      margin-bottom: 3rem;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-heading::before {
+      content: '//';
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      opacity: 0.5;
+    }
+
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(0,240,255,0.4), transparent);
+    }
+
+    .stuff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .stuff-card {
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .stuff-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,255,140,0.4);
+    }
+
+    .stuff-card:hover .glass-glow { opacity: 1; }
+
+    .glass-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,255,140,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .stuff-link {
+      font-family: var(--font-display);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: var(--transition);
+    }
+
+    .stuff-link::after {
+      content: '→';
+      font-size: 1.1em;
+      transition: transform 0.3s ease;
+    }
+
+    .stuff-link:hover::after { transform: translateX(4px); }
+    .stuff-link:hover { opacity: 1; gap: 0.9rem; }
+
+    .stuff-link.glow-red  { opacity: 0.9; }
+    .stuff-link.glow-gold { opacity: 0.9; }
+    .stuff-link.glow-cyan { opacity: 0.9; }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+    footer {
+      border-radius: var(--border-radius);
+      padding: 1.2rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      animation: fadeSlideUp 1s 0.6s ease both;
+    }
+
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-meta {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* =====================================================
+       GLITCH EFFECT (for headings on hover)
+    ===================================================== */
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch:hover::before,
+    .glitch:hover::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch:hover::before {
+      color: var(--neon-cyan);
+      clip: rect(0, 900px, 30%, 0);
+      animation: glitch1 0.4s steps(1) infinite;
+    }
+
+    .glitch:hover::after {
+      color: var(--neon-red);
+      clip: rect(60%, 900px, 100%, 0);
+      animation: glitch2 0.4s steps(1) 0.1s infinite;
+    }
+
+    @keyframes glitch1 {
+      0%  { transform: translate(-3px, 0); }
+      25% { transform: translate(3px, 0); clip: rect(20%, 900px, 50%, 0); }
+      50% { transform: translate(-2px, 1px); clip: rect(0, 900px, 25%, 0); }
+      75% { transform: translate(1px, -1px); clip: rect(60%, 900px, 80%, 0); }
+      100%{ transform: translate(0, 0); }
+    }
+
+    @keyframes glitch2 {
+      0%  { transform: translate(3px, 0); }
+      25% { transform: translate(-3px, 0); clip: rect(70%, 900px, 100%, 0); }
+      50% { transform: translate(2px, -1px); clip: rect(50%, 900px, 70%, 0); }
+      75% { transform: translate(-1px, 1px); clip: rect(80%, 900px, 100%, 0); }
+      100%{ transform: translate(0, 0); }
+    }
+
+    /* =====================================================
+       TYPING ANIMATION
+    ===================================================== */
+    .typewriter {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid var(--neon-green);
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--neon-green);
+      letter-spacing: 0.08em;
+      animation: typing 3.5s steps(40, end), blinkCaret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to   { width: 100%; }
+    }
+
+    @keyframes blinkCaret {
+      from, to { border-color: transparent; }
+      50%      { border-color: var(--neon-green); }
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.2rem;
+        padding: 1.2rem;
+      }
+
+      .logo { width: 70px; height: 70px; }
+
+      .header-content { width: 100%; }
+
+      .profile {
+        grid-template-columns: 1fr;
+        padding: 1.2rem;
+      }
+
+      .profile-pic {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+      }
+
+      .profile-details { text-align: center; }
+
+      .profile-links { justify-content: center; }
+
+      .info-grid { grid-template-columns: 1fr; }
+
+      .stuff-grid { grid-template-columns: 1fr; }
+
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+      }
+
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .site-wrapper { padding: 0 1rem; }
+
+      header { margin: 1rem 0 1.5rem; }
+
+      .btn {
+        font-size: 0.72rem;
+        padding: 0.45rem 0.9rem;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .profile { padding: 2.5rem; }
+      .stuff-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* =====================================================
+       ACCESSIBILITY
+    ===================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--neon-green);
+      outline-offset: 3px;
+    }
+
+    /* =====================================================
+       SCROLL REVEAL
+    ===================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Background -->
+  <canvas id="matrixCanvas" aria-hidden="true"></canvas>
+  <div class="bg-canvas" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- Main wrapper -->
+  <div class="site-wrapper">
+
+    <!-- HEADER -->
+    <header class="glass" role="banner">
+      <div class="corner-br" aria-hidden="true"></div>
+      <img
+        src="https://raw.githubusercontent.com/ScorpionHackingGroup/Images/refs/heads/main/ScorpionHackingGroup_Logo.jpg"
+        alt="Scorpion Hacking Group Logo"
+        class="logo"
+        width="90" height="90"
+        loading="eager"
+      >
+      <div class="header-content">
+        <div class="terminal-bar" aria-hidden="true">
+          <span class="status-dot"></span>
+          <span>SYSTEM ONLINE</span>
+          <span class="blink">_</span>
+          <span id="liveTime"></span>
+        </div>
+        <h1 class="glow-gold glitch" data-text="Scorpion Hacking Group">Scorpion Hacking Group</h1>
+        <nav class="btn-group" aria-label="Social links">
+          <a href="https://t.me/ScorpionHackingGroup" class="btn glow-red" target="_blank" rel="noopener" aria-label="Join Scorpion Hacking Group Telegram Channel">⚡ Telegram Channel</a>
+          <a href="https://t.me/ScorpionHackingGroupChat" class="btn glow-cyan" target="_blank" rel="noopener" aria-label="Join Scorpion Hacking Group Chat">💬 Group Chat</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+      <!-- PROFILE -->
+      <section class="profile glass reveal" aria-label="Profile">
+        <div class="corner-br" aria-hidden="true"></div>
+        <img
+          src="https://raw.githubusercontent.com/ScorpionHackingGroup/Images/refs/heads/main/IMG_20250501_140125_992.jpg"
+          alt="Scorpion Yug – Ethical Hacker & Web Security Analyst"
+          class="profile-pic"
+          width="150" height="150"
+          loading="lazy"
+        >
+        <div class="profile-details">
+          <h2 class="glow-red glitch" data-text="Scorpion Yug">Scorpion Yug</h2>
+          <div class="profile-links">
+            <a href="https://t.me/Scorpion_Yug" class="profile-link glow-cyan" target="_blank" rel="noopener">@Scorpion_Yug</a>
+            <a href="https://t.me/ScorpionYug" class="profile-link glow-gold" target="_blank" rel="noopener">About Yug</a>
+          </div>
+
+          <div class="info-grid" role="list">
+            <div class="info-item" role="listitem">
+              <span class="label">Name</span>
+              <span class="value">Yug</span>
+            </div>
+            <div class="info-item" role="listitem">
+              <span class="label">Zodiac</span>
+              <span class="value">Scorpion (moon) 🦂♏</span>
+            </div>
+            <div class="info-item" role="listitem">
+              <span class="label">Moolank</span>
+              <span class="value">8</span>
+            </div>
+            <div class="info-item" role="listitem">
+              <span class="label">Driver</span>
+              <span class="value">Saturn</span>
+            </div>
+            <div class="info-item" role="listitem">
+              <span class="label">Age</span>
+              <span class="value">18</span>
+            </div>
+            <div class="info-item" role="listitem">
+              <span class="label">Birthday</span>
+              <span class="value">08 Apr 2007</span>
+            </div>
+            <div class="info-item" role="listitem">
+              <span class="label">State</span>
+              <span class="value">Madhya Pradesh</span>
+            </div>
+            <div class="info-item" role="listitem">
+              <span class="label">Country</span>
+              <span class="value">India 🇮🇳</span>
+            </div>
+            <div class="info-item wide" role="listitem">
+              <span class="label">Skills</span>
+              <span class="value">Website Security Analyst · Singer · Shayar · Web Developer · Stock Analyst · Investor &amp; Trader · SEO · Digital Marketing</span>
+            </div>
+            <div class="info-item wide" role="listitem">
+              <span class="label">Interests</span>
+              <span class="value">Sadhna · Spirituality · Astrology · Numerology · Palmistry</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HACKERS STUFF -->
+      <section class="stuff-section reveal" aria-labelledby="stuffHeading">
+        <h2 class="section-heading glow-cyan" id="stuffHeading">Hackers Stuff</h2>
+        <div class="stuff-grid">
+
+          <article class="stuff-card glass reveal">
+            <div class="corner-br" aria-hidden="true"></div>
+            <div class="glass-glow" aria-hidden="true"></div>
+            <p class="card-label">Tool · Crypto</p>
+            <a href="https://scorpion-yug.netlify.app/splash-page" class="stuff-link glow-red" target="_blank" rel="noopener">
+              Ethereum Wallet Generator
+            </a>
+          </article>
+
+          <article class="stuff-card glass reveal">
+            <div class="corner-br" aria-hidden="true"></div>
+            <div class="glass-glow" aria-hidden="true"></div>
+            <p class="card-label">Bot · OSINT</p>
+            <a href="/exifmetabot" class="stuff-link glow-gold" target="_blank" rel="noopener">
+              ExifMetaBot
+            </a>
+          </article>
+
+          <article class="stuff-card glass reveal">
+            <div class="corner-br" aria-hidden="true"></div>
+            <div class="glass-glow" aria-hidden="true"></div>
+            <p class="card-label">Tool · Forensics</p>
+            <a href="https://t.me/ScorpionHackingGroup/42" class="stuff-link glow-red" target="_blank" rel="noopener">
+              Photo-to-Metadata
+            </a>
+          </article>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass reveal" role="contentinfo">
+      <div class="corner-br" aria-hidden="true"></div>
+      <p class="footer-text glow-cyan">© 2025 Scorpion Hacking Group</p>
+      <p class="footer-meta">[ ACCESS AUTHORIZED · ENCRYPTED · v1.0 ]</p>
+    </footer>
+
+  </div><!-- /.site-wrapper -->
+
+  <script>
+    /* ==============================================
+       MATRIX RAIN
+    ============================================== */
+    (function () {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+      const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF><!={}[]#@%';
+      let cols, drops;
+
+      function init() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols  = Math.floor(canvas.width / 16);
+        drops = Array(cols).fill(1);
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(2, 12, 8, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ff8c';
+        ctx.font = '14px Share Tech Mono, monospace';
+        drops.forEach((y, i) => {
+          const char = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(char, i * 16, y * 16);
+          if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        });
+      }
+
+      init();
+      setInterval(draw, 50);
+      window.addEventListener('resize', init);
+    })();
+
+    /* ==============================================
+       LIVE CLOCK
+    ============================================== */
+    function updateTime() {
+      const el = document.getElementById('liveTime');
+      if (!el) return;
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      el.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} IST`;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    /* ==============================================
+       CUSTOM CURSOR
+    ============================================== */
+    const cursor     = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+
+    if (cursor && cursorRing) {
+      let mouseX = 0, mouseY = 0;
+      let ringX  = 0, ringY  = 0;
+
+      document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top  = mouseY + 'px';
+      });
+
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        cursorRing.style.left = ringX + 'px';
+        cursorRing.style.top  = ringY + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      document.querySelectorAll('a, button, .btn').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.classList.add('hovered');
+          cursorRing.classList.add('hovered');
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.classList.remove('hovered');
+          cursorRing.classList.remove('hovered');
+        });
+      });
+    }
+
+    /* ==============================================
+       SCROLL REVEAL
+    ============================================== */
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    /* ==============================================
+       GLITCH TEXT: add data-text automatically
+    ============================================== */
+    document.querySelectorAll('.glitch').forEach(el => {
+      if (!el.getAttribute('data-text')) {
+        el.setAttribute('data-text', el.textContent);
+      }
+    });
+
+    /* ==============================================
+       RANDOM TERMINAL FLICKER
+    ============================================== */
+    function randomFlicker() {
+      const cards = document.querySelectorAll('.stuff-card');
+      if (cards.length === 0) return;
+      const card = cards[Math.floor(Math.random() * cards.length)];
+      card.style.opacity = '0.6';
+      setTimeout(() => { card.style.opacity = '1'; }, 80);
+      setTimeout(randomFlicker, 3000 + Math.random() * 5000);
+    }
+    setTimeout(randomFlicker, 4000);
+  </script>
+
+</body>
+</html>
