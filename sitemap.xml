@@ -25,4 +25,9 @@
     <changefreq>monthly</changefreq>
   </url>
 
+  <url>
+    <loc>https://scorpion-yug.netlify.app/splash.html</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>yearly</changefreq>
+    
 </urlset>
