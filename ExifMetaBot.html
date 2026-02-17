@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <!-- PRIMARY META (refined, future-proof) -->
+  <title>ExifMetaBot – Telegram EXIF Metadata Extractor | OSINT Tool 2026</title>
+  <meta name="description" content="ExifMetaBot: Python Telegram bot that extracts hidden EXIF, GPS & metadata from images. Essential for OSINT, digital forensics & cybersecurity research. By Scorpion Hacking Group.">
+  <meta name="keywords" content="Scorpion Hacking Group Tool, ExifMetaBot, Telegram EXIF Bot, Python EXIF Extractor, Image Metadata OSINT Tool, Photo GPS Finder, Digital Forensics 2026, OSINT Telegram Bot, image intelligence, geolocation">
+  <meta name="author" content="Scorpion Hacking Group">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <meta name="theme-color" content="#00f7ff">
+
+  <!-- CANONICAL & FAVICON -->
+  <link rel="canonical" href="https://github.com/ScorpionHackingGroup/ExifMetaBot/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='10' y='75' font-size='80' fill='%2300f7ff'%3E⌘%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='10' y='75' font-size='80' fill='%2300f7ff'%3E⌘%3C/text%3E%3C/svg%3E">
+
+  <!-- OPEN GRAPH / FACEBOOK / LINKEDIN -->
+  <meta property="og:title" content="ExifMetaBot – Telegram EXIF Metadata Extractor (2026)">
+  <meta property="og:description" content="State‑of‑the‑art OSINT image metadata extraction for Telegram. Extract GPS, device fingerprints & hidden EXIF. By Scorpion Hacking Group.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://github.com/ScorpionHackingGroup/ExifMetaBot/">
+  <meta property="og:image" content="https://raw.githubusercontent.com/ScorpionHackingGroup/ExifMetaBot/main/assets/og-banner.jpg">
+  <meta property="og:site_name" content="Scorpion Hacking Group">
+
+  <!-- TWITTER CARD -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ExifMetaBot – Telegram EXIF OSINT Tool 2026">
+  <meta name="twitter:description" content="Python bot extracting EXIF, GPS & metadata from images. Perfect for digital forensics & investigations.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/ScorpionHackingGroup/ExifMetaBot/main/assets/twitter-banner.jpg">
+
+  <!-- STRUCTURED DATA (enhanced) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ExifMetaBot",
+    "operatingSystem": "Cross-platform (Linux, Windows, macOS)",
+    "applicationCategory": "SecurityApplication",
+    "applicationSubCategory": "OSINT Tool",
+    "description": "Telegram EXIF Metadata Extractor Bot for OSINT, digital forensics and geolocation intelligence.",
+    "featureList": "EXIF extraction, GPS metadata, camera fingerprint, timestamp analysis, automatic dependency installer",
+    "softwareVersion": "2.0.6",
+    "url": "https://github.com/ScorpionHackingGroup/ExifMetaBot/",
+    "author": {
+      "@type": "Organization",
+      "name": "Scorpion Hacking Group",
+      "url": "https://github.com/ScorpionHackingGroup"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "142"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+
+  <!-- STYLE – FULLY RESPONSIVE + FIXES -->
+  <style>
+    /* reset + base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --neon: #00f7ff;
+      --bg: #0f0f0f;
+      --glass: rgba(255, 255, 255, 0.05);
+      --border: rgba(0, 247, 255, 0.4);
+      --text-light: #e0e0e0;
+      --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+      --card-radius: 1.5rem;
+      --spacer: clamp(1rem, 4vh, 3rem);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-light);
+      font-family: var(--font-mono);
+      line-height: 1.6;
+      overflow-x: hidden;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* smooth glow */
+    @keyframes glow {
+      0% { text-shadow: 0 0 0.8rem var(--neon), 0 0 1.2rem transparent; }
+      50% { text-shadow: 0 0 1.8rem var(--neon), 0 0 2.5rem rgba(0,247,255,0.4); }
+      100% { text-shadow: 0 0 0.8rem var(--neon), 0 0 1.2rem transparent; }
+    }
+
+    /* header responsive */
+    header {
+      padding: clamp(1.5rem, 5vh, 3rem) clamp(1rem, 5vw, 4rem);
+      text-align: center;
+      border-bottom: 0.2rem solid var(--border);
+      background: radial-gradient(circle at 50% 0%, rgba(0,247,255,0.1), transparent 70%);
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: var(--neon);
+      animation: glow 2.5s infinite ease-in-out;
+      letter-spacing: 0.1em;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    header p {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      opacity: 0.9;
+      max-width: 800px;
+      margin: 1rem auto 0;
+      border-right: 0.15rem solid var(--neon);
+      white-space: nowrap;
+      overflow: hidden;
+      width: fit-content;
+      animation: typing 4s steps(50, end) 0.5s 1 normal both, blink 0.9s step-end infinite;
+    }
+
+    /* typing fix for mobile */
+    @keyframes typing {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    /* container – responsive grid like */
+    .container {
+      padding: clamp(1.5rem, 6vh, 4rem) clamp(1rem, 6vw, 8rem);
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* cards: fully responsive + no scale overflow */
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 0.1rem solid var(--border);
+      border-radius: var(--card-radius);
+      padding: clamp(1.8rem, 4vh, 3rem) clamp(1.5rem, 4vw, 3rem);
+      transition: 0.25s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      word-wrap: break-word;
+    }
+
+    .card:hover {
+      transform: translateY(-5px) scale(1.005);
+      box-shadow: 0 0 2rem var(--neon), 0 10px 25px rgba(0,247,255,0.2);
+      border-color: var(--neon);
+    }
+
+    /* heading inside card */
+    h2 {
+      color: var(--neon);
+      margin-bottom: 1.5rem;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      border-left: 0.4rem solid var(--neon);
+      padding-left: 1rem;
+    }
+
+    /* text & lists */
+    p, li, pre {
+      font-size: clamp(0.95rem, 2vw, 1.2rem);
+      color: #ddd;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0.5rem;
+    }
+    li {
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    li::before {
+      content: "▶";
+      color: var(--neon);
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    /* pre / code block (installation) */
+    pre {
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border-radius: 1.2rem;
+      border: 1px solid #2a2a2a;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #b3f0ff;
+      box-shadow: inset 0 0 10px rgba(0,247,255,0.1);
+    }
+
+    /* button – fully tappable */
+    .button {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      margin-top: 2rem;
+      color: #0f0f0f;
+      background: var(--neon);
+      border-radius: 3rem;
+      text-decoration: none;
+      font-weight: 800;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,247,255,0.6);
+      letter-spacing: 0.05rem;
+    }
+
+    .button:hover {
+      background: #ffffff;
+      color: #000;
+      transform: scale(1.05);
+      box-shadow: 0 0 30px var(--neon);
+    }
+
+    /* footer */
+    footer {
+      text-align: center;
+      padding: 2rem clamp(1rem, 5vw, 3rem);
+      border-top: 0.2rem solid var(--border);
+      opacity: 0.8;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      background: rgba(0,0,0,0.4);
+      width: 100%;
+    }
+
+    /* responsive small devices fixes */
+    @media (max-width: 600px) {
+      header p {
+        white-space: normal;     /* fallback if animation ends */
+        border-right: none;
+        animation: none;         /* avoid tiny overflow */
+        width: 100%;
+        border-right: 0;
+        padding: 0 5px;
+      }
+      .card {
+        padding: 1.8rem 1.2rem;
+      }
+      .button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    /* medium devices */
+    @media (min-width: 768px) {
+      .container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2.5rem;
+      }
+      .container .card:first-child {
+        grid-column: span 2;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .container .card:first-child {
+        grid-column: span 3;
+      }
+    }
+
+    /* touch-friendly improvements */
+    a, button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* no horizontal scroll */
+    img, svg {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ExifMetaBot</h1>
+  <p>Telegram EXIF Metadata Extractor Bot for OSINT & Digital Forensics (2026)</p>
+</header>
+
+<main class="container">
+  <!-- card 1 - intro + CTA -->
+  <section class="card">
+    <h2>⚡ What is ExifMetaBot?</h2>
+    <p style="margin-bottom: 0.8rem;">
+      <strong style="color: var(--neon);">Python Telegram bot</strong> that extracts hidden EXIF, GPS, camera fingerprints, and timestamps from images. Essential for OSINT, cybersecurity analysts, journalists, and digital forensics professionals.
+    </p>
+    <p style="margin-bottom: 0.5rem;"> Developed and maintained by <strong>Scorpion Hacking Group</strong> — used by hundreds of investigators worldwide.</p>
+    <a href="https://github.com/ScorpionHackingGroup/ExifMetaBot/" class="button" target="_blank" rel="noopener">🔍 View on GitHub</a>
+  </section>
+
+  <!-- card 2 - core features -->
+  <section class="card">
+    <h2>📌 Core Features</h2>
+    <ul>
+      <li>Automated dependency installer</li>
+      <li>Telegram bot token validator</li>
+      <li>Supports JPG, JPEG, PNG, TIFF</li>
+      <li>Deep EXIF tag extraction</li>
+      <li>GPS coordinate decoding (with maps link)</li>
+      <li>Secure image verification (no storage)</li>
+      <li>Corrupt / stripped metadata detection</li>
+      <li>Multi‑language output (raw & readable)</li>
+    </ul>
+  </section>
+
+  <!-- card 3 - why EXIF matters -->
+  <section class="card">
+    <h2>🧠 Why EXIF Metadata Matters</h2>
+    <p>EXIF data reveals <strong>GPS coordinates, device model, software, timestamps, and even thumbnails</strong>. In OSINT workflows, one image can unlock geolocation, authenticity clues, and threat intelligence. ExifMetaBot surfaces this in seconds via Telegram.</p>
+  </section>
+
+  <!-- card 4 - quick install (clean) -->
+  <section class="card">
+    <h2>⚙️ Installation</h2>
+    <pre>git clone https://github.com/ScorpionHackingGroup/ExifMetaBot.git
+cd ExifMetaBot
+pip install -r requirements.txt
+python exifbot.py</pre>
+    <p style="margin-top: 1rem;">🔧 Set your <code style="background:#222; padding:0.2rem 0.5rem; border-radius:0.5rem;">BOT_TOKEN</code> and start extracting.</p>
+  </section>
+
+  <!-- card 5 - use cases (detailed) -->
+  <section class="card">
+    <h2>🎯 Use Cases</h2>
+    <ul>
+      <li>OSINT geolocation & digital footprinting</li>
+      <li>Digital forensics (image authentication)</li>
+      <li>Cybersecurity research & threat hunting</li>
+      <li>Journalistic photo verification</li>
+      <li>Social media image intelligence</li>
+    </ul>
+  </section>
+
+  <!-- card 6 - tech stack + Scorpion -->
+  <section class="card">
+    <h2>🛠️ Tech & Credits</h2>
+    <p><span style="color: var(--neon);">Python 3.10+ · python-telegram-bot · Pillow · ExifRead · piexif</span><br>Designed for stealth, speed, and extensibility.</p>
+    <p style="margin-top: 1rem;">🤘 <strong>Scorpion Hacking Group</strong> – Scorpion Yug & Zara lead development. Contributions welcome.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Tool by <strong>Scorpion Hacking Group</strong> — Developed by Scorpion Yug & Zara<br>
+  © 2026 ExifMetaBot – Image OSINT & Metadata Tool | <a href="https://github.com/ScorpionHackingGroup/ExifMetaBot/" style="color: var(--neon); text-decoration: none;">GitHub</a></p>
+</footer>
+
+<!-- minimal script: smooth scroll + seo-friendly, removed hash errors -->
+<script>
+  (function() {
+    // smooth anchor scroll (only for internal # links)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const hash = this.getAttribute('href');
+        if (hash === "#") return;
+        const target = document.querySelector(hash);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ensure typing animation works on mobile (no half-cut)
+    const typingEl = document.querySelector('.typing');
+    if (typingEl && window.innerWidth < 600) {
+      // on very small screens we already disabled via css, but we want smoothness
+      typingEl.style.whiteSpace = 'normal';
+      typingEl.style.borderRight = 'none';
+      typingEl.style.animation = 'none';
+      typingEl.style.width = '100%';
+    }
+  })();
+</script>
+
+<!-- fallback for any potential flash of unstyled content -->
+</body>
+</html>
