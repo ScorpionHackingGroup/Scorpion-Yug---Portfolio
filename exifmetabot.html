@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+  <!-- SEO Meta Tags -->
+  <title>ExifMetaBot – Telegram EXIF Metadata Extractor Bot | 2026 Image OSINT Tool</title>
+  <meta name="description" content="ExifMetaBot is a powerful Telegram EXIF metadata extractor bot for OSINT investigations, digital forensics, and cybersecurity research. Extract GPS, camera, and timestamp data from images.">
+  <meta name="keywords" content="ExifMetaBot, Telegram EXIF bot, Python EXIF extractor, image metadata OSINT tool, photo GPS metadata finder, digital forensics, geolocation metadata, AI image investigation 2026, Scorpion Hacking Group">
+  <meta name="author" content="Scorpion Hacking Group">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://scorpion-yug.netlify.app/exifmetabot">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://scorpion-yug.netlify.app/exifmetabot">
+  <meta property="og:title" content="ExifMetaBot – Telegram EXIF Metadata Extractor Bot">
+  <meta property="og:description" content="Powerful Telegram bot for extracting EXIF metadata from images. Built for OSINT investigations and digital forensics.">
+  <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ExifMetaBot – Telegram EXIF Metadata Extractor Bot">
+  <meta name="twitter:description" content="Extract hidden EXIF metadata from images directly in Telegram. Built for OSINT and cybersecurity research.">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ExifMetaBot",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Telegram",
+    "description": "Telegram bot that extracts EXIF metadata from images for OSINT investigations and digital forensics",
+    "author": {
+      "@type": "Organization",
+      "name": "Scorpion Hacking Group"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       RESET & ROOT VARIABLES
+    ===================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #020c08;
+      --bg-secondary: #030f0a;
+      --glass-bg: rgba(0, 255, 140, 0.03);
+      --glass-border: rgba(0, 255, 140, 0.15);
+
+      --neon-green: #00ff8c;
+      --neon-cyan: #00f0ff;
+      --neon-gold: #ffd700;
+      --neon-red: #ff2244;
+      --neon-orange: #ff6600;
+
+      --text-primary: #c8ffd4;
+      --text-muted: rgba(200, 255, 212, 0.5);
+
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-display: 'Orbitron', monospace;
+      --font-body: 'Rajdhani', sans-serif;
+
+      --glow-green: 0 0 8px #00ff8c, 0 0 20px rgba(0, 255, 140, 0.4);
+      --glow-cyan: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.4);
+      --glow-gold: 0 0 8px #ffd700, 0 0 20px rgba(255, 215, 0, 0.4);
+      --glow-red: 0 0 8px #ff2244, 0 0 20px rgba(255, 34, 68, 0.4);
+
+      --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --border-radius: 4px;
+    }
+
+    /* =====================================================
+       SCROLLBAR
+    ===================================================== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--neon-green);
+      border-radius: 3px;
+      box-shadow: var(--glow-green);
+    }
+
+    /* =====================================================
+       BASE STYLES
+    ===================================================== */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.7;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      box-shadow: var(--glow-green);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(0, 255, 140, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease, width 0.3s, height 0.3s, border-color 0.3s;
+    }
+    .cursor.hovered { width: 20px; height: 20px; }
+    .cursor-ring.hovered { width: 50px; height: 50px; border-color: var(--neon-cyan); }
+
+    /* =====================================================
+       BACKGROUND EFFECTS
+    ===================================================== */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 255, 140, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 140, 0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridShift 20s linear infinite;
+    }
+
+    .bg-canvas::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 20%, rgba(0, 255, 140, 0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 70% at 80% 80%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255, 34, 68, 0.03) 0%, transparent 60%);
+    }
+
+    @keyframes gridShift {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+      pointer-events: none;
+      animation: scanAnim 8s linear infinite;
+    }
+
+    @keyframes scanAnim {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100vh; }
+    }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.07;
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       LAYOUT
+    ===================================================== */
+    .site-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* =====================================================
+       GLASS / CARD COMPONENT
+    ===================================================== */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 255, 140, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .glass::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 16px; height: 16px;
+      border-top: 2px solid var(--neon-green);
+      border-left: 2px solid var(--neon-green);
+      pointer-events: none;
+    }
+
+    .corner-br {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 16px; height: 16px;
+      border-bottom: 2px solid var(--neon-green);
+      border-right: 2px solid var(--neon-green);
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       GLOW UTILITIES
+    ===================================================== */
+    .glow-green { color: var(--neon-green); text-shadow: var(--glow-green); }
+    .glow-cyan  { color: var(--neon-cyan);  text-shadow: var(--glow-cyan); }
+    .glow-gold  { color: var(--neon-gold);  text-shadow: var(--glow-gold); }
+    .glow-red   { color: var(--neon-red);   text-shadow: var(--glow-red); }
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+    header {
+      border-radius: var(--border-radius);
+      margin: 2rem 0 2.5rem;
+      padding: 2rem;
+      animation: fadeSlideDown 0.8s ease both;
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-content {
+      text-align: center;
+    }
+
+    .terminal-bar {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--neon-green);
+      margin-bottom: 1rem;
+      opacity: 0.7;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: var(--glow-green);
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4.5vw, 3rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+      opacity: 0.85;
+    }
+
+    .hero-description {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      opacity: 0.9;
+    }
+
+    .badge-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid currentColor;
+      border-radius: 2px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* =====================================================
+       BUTTONS & LINKS
+    ===================================================== */
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 0.65rem 1.5rem;
+      border: 1px solid currentColor;
+      border-radius: 2px;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      background: transparent;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: currentColor;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn:hover::before { opacity: 0.12; }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      letter-spacing: 0.15em;
+    }
+
+    .btn-primary {
+      color: var(--neon-cyan);
+      box-shadow: 0 0 8px rgba(0,240,255,0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: var(--glow-cyan);
+    }
+
+    .btn-secondary {
+      color: var(--neon-gold);
+      box-shadow: 0 0 8px rgba(255,215,0,0.3);
+    }
+
+    .btn-secondary:hover {
+      box-shadow: var(--glow-gold);
+    }
+
+    /* =====================================================
+       TELEGRAM SECTION
+    ===================================================== */
+    .telegram-section {
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2.5rem;
+      text-align: center;
+      animation: fadeSlideUp 0.9s 0.1s ease both;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .tg-logo {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1.5rem;
+      filter: drop-shadow(var(--glow-cyan));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .tg-links {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    /* =====================================================
+       SECTION STYLING
+    ===================================================== */
+    .content-section {
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeSlideUp 1s 0.2s ease both;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-heading::before {
+      content: '//';
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      opacity: 0.5;
+    }
+
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, currentColor, transparent);
+      opacity: 0.3;
+    }
+
+    .content-section p {
+      margin-bottom: 1rem;
+      font-size: 1.02rem;
+      line-height: 1.8;
+    }
+
+    .content-section ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 1rem 0;
+    }
+
+    .content-section ul li {
+      padding: 0.5rem 0 0.5rem 1.8rem;
+      position: relative;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .content-section ul li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--neon-green);
+      font-size: 1.2em;
+    }
+
+    /* =====================================================
+       FEATURE GRID
+    ===================================================== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,255,140,0.4);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .feature-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-desc {
+      font-size: 0.92rem;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    /* =====================================================
+       CODE BLOCKS
+    ===================================================== */
+    .code-block {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 255, 140, 0.2);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block code {
+      color: var(--neon-green);
+      display: block;
+      white-space: pre;
+      line-height: 1.6;
+    }
+
+    .code-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    /* =====================================================
+       CALLOUT BOXES
+    ===================================================== */
+    .callout {
+      border-left: 3px solid currentColor;
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .callout.warning {
+      border-color: var(--neon-red);
+      color: var(--neon-red);
+    }
+
+    .callout.info {
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    .callout.success {
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+    }
+
+    .callout-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .callout-text {
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+    footer {
+      border-radius: var(--border-radius);
+      padding: 1.2rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      animation: fadeSlideUp 1s 0.6s ease both;
+    }
+
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-meta {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 768px) {
+      header { padding: 1.5rem; }
+      .telegram-section { padding: 1.5rem; }
+      .content-section { padding: 1.5rem; }
+      .tg-logo { width: 80px; height: 80px; }
+      .tg-links { flex-direction: column; gap: 1rem; }
+      .btn { font-size: 0.75rem; padding: 0.5rem 1.2rem; }
+      footer { flex-direction: column; align-items: flex-start; padding: 1rem; }
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .site-wrapper { padding: 0 1rem; }
+      header { margin: 1rem 0 1.5rem; }
+      .hero-title { font-size: 1.5rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+
+    /* =====================================================
+       ACCESSIBILITY
+    ===================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--neon-green);
+      outline-offset: 3px;
+    }
+
+    /* =====================================================
+       SCROLL REVEAL
+    ===================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Background -->
+  <canvas id="matrixCanvas" aria-hidden="true"></canvas>
+  <div class="bg-canvas" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- Main wrapper -->
+  <div class="site-wrapper">
+
+    <!-- HERO HEADER -->
+    <header class="glass" role="banner">
+      <div class="corner-br" aria-hidden="true"></div>
+      <div class="hero-content">
+        <div class="terminal-bar" aria-hidden="true">
+          <span class="status-dot"></span>
+          <span>OSINT TOOL ACTIVE</span>
+          <span id="liveTime"></span>
+        </div>
+        <h1 class="hero-title glow-cyan">ExifMetaBot</h1>
+        <p class="hero-subtitle glow-green">Telegram EXIF Metadata Extractor Bot (Python)</p>
+        <p class="hero-description">
+          A powerful <strong>Telegram EXIF Metadata Extractor Bot</strong> built with Python for OSINT researchers, cybersecurity analysts, digital forensics professionals, and investigators. Extract hidden EXIF metadata from images directly inside Telegram.
+        </p>
+        <div class="badge-group">
+          <span class="badge glow-green">🚀 OSINT Workflows</span>
+          <span class="badge glow-cyan">🔎 Digital Investigations</span>
+          <span class="badge glow-gold">📸 2026 Latest</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+      <!-- TELEGRAM COMMUNITY -->
+      <section class="telegram-section glass reveal" aria-label="Telegram Community">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-gold">🚀 Join Our Telegram Community</h2>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo" class="tg-logo" width="100" height="100">
+        <div class="tg-links">
+          <a href="https://t.me/ScorpionHackingGroupChat" class="btn btn-primary" target="_blank" rel="noopener">💬 Group Chat</a>
+          <a href="https://t.me/ScorpionHackingGroup" class="btn btn-secondary" target="_blank" rel="noopener">📢 Official Channel</a>
+        </div>
+        <p style="margin-top: 1.5rem; opacity: 0.8;">Stay updated with new OSINT tools, cybersecurity discussions, and digital investigation resources.</p>
+      </section>
+
+      <!-- WHAT IS EXIFMETABOT -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-red">🔥 What Is ExifMetaBot?</h2>
+        <p>ExifMetaBot is a <strong>Telegram bot that extracts EXIF metadata from images</strong> using:</p>
+        <ul>
+          <li><code>pyTelegramBotAPI</code> (telebot)</li>
+          <li><code>Pillow (PIL)</code></li>
+          <li><code>exifread</code></li>
+        </ul>
+        <p>It automatically installs required libraries and validates your Telegram bot token before running.</p>
+
+        <h3 class="section-heading glow-cyan" style="margin-top: 2rem; font-size: 1.2rem;">🎯 Ideal For:</h3>
+        <div class="feature-grid">
+          <div class="feature-card glass">
+            <span class="feature-icon">🔍</span>
+            <div class="feature-title glow-green">OSINT Investigations</div>
+            <div class="feature-desc">Extract intelligence from image metadata</div>
+          </div>
+          <div class="feature-card glass">
+            <span class="feature-icon">🖼️</span>
+            <div class="feature-title glow-cyan">Image Forensics</div>
+            <div class="feature-desc">Analyze photo authenticity and origin</div>
+          </div>
+          <div class="feature-card glass">
+            <span class="feature-icon">🛡️</span>
+            <div class="feature-title glow-gold">Cybersecurity Research</div>
+            <div class="feature-desc">Device fingerprinting and analysis</div>
+          </div>
+          <div class="feature-card glass">
+            <span class="feature-icon">📍</span>
+            <div class="feature-title glow-red">Geolocation Intel</div>
+            <div class="feature-desc">GPS coordinates extraction</div>
+          </div>
+          <div class="feature-card glass">
+            <span class="feature-icon">📰</span>
+            <div class="feature-title glow-cyan">Journalism Verification</div>
+            <div class="feature-desc">Verify image sources and timestamps</div>
+          </div>
+          <div class="feature-card glass">
+            <span class="feature-icon">⚖️</span>
+            <div class="feature-title glow-green">Digital Evidence</div>
+            <div class="feature-desc">Legal and forensic documentation</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY EXIF MATTERS -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-gold">🧠 Why EXIF Metadata Matters in OSINT</h2>
+        <p>EXIF (Exchangeable Image File Format) metadata may contain:</p>
+        <ul>
+          <li>📍 GPS coordinates (latitude & longitude)</li>
+          <li>📷 Camera model & manufacturer</li>
+          <li>🕒 Date and time the photo was taken</li>
+          <li>⚙️ Camera settings (ISO, aperture, shutter speed)</li>
+          <li>🧭 Orientation & device details</li>
+        </ul>
+        <p style="margin-top: 1.5rem;">In OSINT (Open-Source Intelligence), image metadata can reveal:</p>
+        <ul>
+          <li>Location intelligence</li>
+          <li>Timeline verification</li>
+          <li>Device fingerprinting</li>
+          <li>Authenticity validation</li>
+        </ul>
+        <p style="margin-top: 1.5rem;"><strong>ExifMetaBot automates this process directly inside Telegram.</strong></p>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-cyan">⚙️ Features</h2>
+        <ul>
+          <li>✅ Automatic dependency installation</li>
+          <li>✅ Telegram Bot Token validation</li>
+          <li>✅ Supports JPG, JPEG, PNG</li>
+          <li>✅ Extracts full EXIF tag details</li>
+          <li>✅ Safe error handling</li>
+          <li>✅ Detects invalid image files</li>
+          <li>✅ Warns when metadata is stripped</li>
+          <li>✅ Inline keyboard with community links</li>
+          <li>✅ Secure image verification using Pillow</li>
+          <li>✅ Detailed EXIF extraction using exifread</li>
+        </ul>
+      </section>
+
+      <!-- TECH STACK -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-green">🛠 Tech Stack</h2>
+        <ul>
+          <li>Python 3.x</li>
+          <li>pyTelegramBotAPI (telebot)</li>
+          <li>Pillow (PIL)</li>
+          <li>exifread</li>
+          <li>Telegram Bot API</li>
+        </ul>
+      </section>
+
+      <!-- INSTALLATION -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-red">🚀 Installation Guide</h2>
+        
+        <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--neon-cyan); margin: 1.5rem 0 0.75rem;">1️⃣ Clone the Repository</h3>
+        <div class="code-block">
+          <span class="code-label">bash</span>
+          <code>git clone https://github.com/yourusername/ExifMetaBot.git
+cd ExifMetaBot</code>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--neon-cyan); margin: 1.5rem 0 0.75rem;">2️⃣ Run the Script</h3>
+        <div class="code-block">
+          <span class="code-label">bash</span>
+          <code>python exifbot.py</code>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--neon-cyan); margin: 1.5rem 0 0.75rem;">3️⃣ Enter Bot Token</h3>
+        <p>The script will prompt you for your Telegram Bot Token.</p>
+
+        <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--neon-cyan); margin: 1.5rem 0 0.75rem;">4️⃣ Enter Your Telegram ChatId or UserId</h3>
+        <p>(Not Username)</p>
+
+        <p style="margin-top: 1.5rem;">The script automatically installs:</p>
+        <ul>
+          <li>pyTelegramBotAPI</li>
+          <li>Pillow</li>
+          <li>exifread</li>
+        </ul>
+        <p style="margin-top: 1rem;"><strong>No manual dependency setup required.</strong></p>
+      </section>
+
+      <!-- SETUP BOT TOKEN -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-gold">🔑 Setup Telegram Bot Token</h2>
+        <ol style="list-style: decimal; padding-left: 2rem; margin: 1rem 0;">
+          <li style="margin: 0.5rem 0;">Open Telegram</li>
+          <li style="margin: 0.5rem 0;">Search for <strong>@BotFather</strong></li>
+          <li style="margin: 0.5rem 0;">Create a new bot using <code>/newbot</code></li>
+          <li style="margin: 0.5rem 0;">Copy the bot token</li>
+          <li style="margin: 0.5rem 0;">Paste it into the terminal when prompted</li>
+        </ol>
+        <p style="margin-top: 1rem;">The script validates your token before launching.</p>
+      </section>
+
+      <!-- HOW TO USE -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-cyan">📸 How to Use</h2>
+        
+        <div class="callout warning">
+          <div class="callout-title">⚠️ IMPORTANT</div>
+          <div class="callout-text">To extract metadata, users must send images as <strong>Documents</strong>, not compressed photos.</div>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--neon-green); margin: 1.5rem 0 0.75rem;">✅ Correct Method:</h3>
+        <ul>
+          <li>Tap 📎 → File → Select image → Send</li>
+        </ul>
+
+        <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--neon-red); margin: 1.5rem 0 0.75rem;">❌ Incorrect Method:</h3>
+        <ul>
+          <li>Sending as a normal photo (Telegram removes metadata)</li>
+        </ul>
+      </section>
+
+      <!-- EXAMPLE OUTPUT -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-green">📊 Example Output</h2>
+        <div class="code-block">
+          <span class="code-label">output</span>
+          <code>📸 Photo Metadata:
+
+🔹 Image Make: Canon
+🔹 Image Model: Canon EOS 80D
+🔹 EXIF DateTimeOriginal: 2025:12:18 14:32:10
+🔹 GPS GPSLatitude: 40 deg 26' 46.00"
+🔹 GPS GPSLongitude: 79 deg 58' 56.00"</code>
+        </div>
+        <p style="margin-top: 1rem;">If no metadata is found, the bot explains why.</p>
+      </section>
+
+      <!-- ERROR HANDLING -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-red">🛡 Error Handling</h2>
+        <p>ExifMetaBot includes:</p>
+        <ul>
+          <li>Invalid token detection</li>
+          <li>Corrupt file detection</li>
+          <li>Non-image rejection</li>
+          <li>Metadata extraction failure handling</li>
+          <li>Polling crash protection</li>
+        </ul>
+      </section>
+
+      <!-- LEGAL NOTICE -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-gold">⚠️ Legal & Ethical Notice</h2>
+        
+        <div class="callout info">
+          <div class="callout-title">✅ Intended For:</div>
+          <div class="callout-text">
+            <ul style="margin-top: 0.5rem;">
+              <li>Educational purposes</li>
+              <li>Ethical investigations</li>
+              <li>Cybersecurity research</li>
+              <li>Authorized forensic analysis</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout warning" style="margin-top: 1.5rem;">
+          <div class="callout-title">❌ Do NOT Use For:</div>
+          <div class="callout-text">
+            <ul style="margin-top: 0.5rem;">
+              <li>Harassment</li>
+              <li>Stalking</li>
+              <li>Illegal surveillance</li>
+              <li>Privacy violations</li>
+            </ul>
+          </div>
+        </div>
+
+        <p style="margin-top: 1.5rem;"><strong>Always follow local laws and ethical guidelines.</strong></p>
+      </section>
+
+      <!-- USE CASES -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-cyan">🧩 Use Cases</h2>
+        <ul>
+          <li>OSINT Investigators</li>
+          <li>Threat Intelligence Analysts</li>
+          <li>Journalists</li>
+          <li>Law Enforcement (authorized use)</li>
+          <li>Cybersecurity Students</li>
+          <li>Digital Forensics Professionals</li>
+        </ul>
+      </section>
+
+      <!-- CREDITS -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-green">👨‍💻 Credits</h2>
+        <p><strong>Tool By:</strong> <span class="glow-gold">Scorpion Hacking Group</span></p>
+        <p><strong>Developed By:</strong> <span class="glow-cyan">Scorpion Yug & Zara</span></p>
+      </section>
+
+      <!-- FINAL WORDS -->
+      <section class="content-section glass reveal">
+        <div class="corner-br" aria-hidden="true"></div>
+        <h2 class="section-heading glow-red">🏁 Final Words</h2>
+        <p>ExifMetaBot is a lightweight, powerful, and practical <strong>Telegram-based EXIF metadata extraction OSINT tool for 2026</strong>.</p>
+        <p style="margin-top: 1rem;">If you work in digital investigations, cybersecurity, or open-source intelligence — this tool belongs in your toolkit.</p>
+        
+        <div class="callout success" style="margin-top: 2rem;">
+          <div class="callout-title">⭐ Support the Project</div>
+          <div class="callout-text">
+            <p>If you find ExifMetaBot useful:</p>
+            <ul style="margin-top: 0.5rem;">
+              <li>⭐ Star this repository</li>
+              <li>🍴 Fork it</li>
+              <li>🛠 Contribute improvements</li>
+              <li>📢 Share with OSINT communities</li>
+              <li>💬 Join our Telegram group & channel</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER (Same as portfolio) -->
+    <footer class="glass reveal" role="contentinfo">
+      <div class="corner-br" aria-hidden="true"></div>
+      <p class="footer-text glow-cyan">© 2025 Scorpion Hacking Group</p>
+      <p class="footer-meta">[ ACCESS AUTHORIZED · ENCRYPTED · v1.0 ]</p>
+    </footer>
+
+  </div><!-- /.site-wrapper -->
+
+  <script>
+    /* ==============================================
+       MATRIX RAIN
+    ============================================== */
+    (function () {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+      const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF><!={}[]#@%';
+      let cols, drops;
+
+      function init() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols  = Math.floor(canvas.width / 16);
+        drops = Array(cols).fill(1);
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(2, 12, 8, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ff8c';
+        ctx.font = '14px Share Tech Mono, monospace';
+        drops.forEach((y, i) => {
+          const char = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(char, i * 16, y * 16);
+          if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        });
+      }
+
+      init();
+      setInterval(draw, 50);
+      window.addEventListener('resize', init);
+    })();
+
+    /* ==============================================
+       LIVE CLOCK
+    ============================================== */
+    function updateTime() {
+      const el = document.getElementById('liveTime');
+      if (!el) return;
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      el.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} IST`;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    /* ==============================================
+       CUSTOM CURSOR
+    ============================================== */
+    const cursor     = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+
+    if (cursor && cursorRing) {
+      let mouseX = 0, mouseY = 0;
+      let ringX  = 0, ringY  = 0;
+
+      document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top  = mouseY + 'px';
+      });
+
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        cursorRing.style.left = ringX + 'px';
+        cursorRing.style.top  = ringY + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      document.querySelectorAll('a, button, .btn').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.classList.add('hovered');
+          cursorRing.classList.add('hovered');
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.classList.remove('hovered');
+          cursorRing.classList.remove('hovered');
+        });
+      });
+    }
+
+    /* ==============================================
+       SCROLL REVEAL
+    ============================================== */
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
