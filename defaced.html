@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  
+  <title>Hacked by Scorpion Hacking Group | Security Breach Detected</title>
+  <meta name="description" content="Website compromised by Scorpion Hacking Group. Security vulnerability detected. Improve your security measures.">
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       RESET & ROOT VARIABLES
+    ===================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #020c08;
+      --bg-secondary: #030f0a;
+      --glass-bg: rgba(0, 255, 140, 0.03);
+      --glass-border: rgba(0, 255, 140, 0.15);
+
+      --neon-green: #00ff8c;
+      --neon-cyan: #00f0ff;
+      --neon-gold: #ffd700;
+      --neon-red: #ff2244;
+      --neon-orange: #ff6600;
+      --saffron: #FF9933;
+
+      --text-primary: #c8ffd4;
+      --text-muted: rgba(200, 255, 212, 0.5);
+
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-display: 'Orbitron', monospace;
+      --font-body: 'Rajdhani', sans-serif;
+
+      --glow-green: 0 0 8px #00ff8c, 0 0 20px rgba(0, 255, 140, 0.4);
+      --glow-cyan: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.4);
+      --glow-gold: 0 0 8px #ffd700, 0 0 20px rgba(255, 215, 0, 0.4);
+      --glow-red: 0 0 8px #ff2244, 0 0 20px rgba(255, 34, 68, 0.4);
+      --glow-saffron: 0 0 10px #FF9933, 0 0 25px rgba(255, 153, 51, 0.5);
+
+      --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --border-radius: 4px;
+    }
+
+    /* =====================================================
+       SCROLLBAR
+    ===================================================== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--neon-cyan);
+      border-radius: 3px;
+      box-shadow: var(--glow-cyan);
+    }
+
+    /* =====================================================
+       BASE STYLES
+    ===================================================== */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+      cursor: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--saffron);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      box-shadow: var(--glow-saffron);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255, 153, 51, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease, width 0.3s, height 0.3s, border-color 0.3s;
+    }
+    .cursor.hovered { width: 20px; height: 20px; }
+    .cursor-ring.hovered { width: 50px; height: 50px; border-color: var(--neon-cyan); }
+
+    /* =====================================================
+       BACKGROUND EFFECTS
+    ===================================================== */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 153, 51, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 153, 51, 0.06) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridShift 20s linear infinite;
+    }
+
+    .bg-canvas::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 20%, rgba(255, 153, 51, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 70% at 80% 80%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255, 34, 68, 0.04) 0%, transparent 60%);
+    }
+
+    @keyframes gridShift {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+      pointer-events: none;
+      animation: scanAnim 8s linear infinite;
+    }
+
+    @keyframes scanAnim {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100vh; }
+    }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       LAYOUT
+    ===================================================== */
+    .defaced-container {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* =====================================================
+       GLASS COMPONENT
+    ===================================================== */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 153, 51, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .glass::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 16px; height: 16px;
+      border-top: 2px solid var(--saffron);
+      border-left: 2px solid var(--saffron);
+      pointer-events: none;
+    }
+
+    .corner-br {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 16px; height: 16px;
+      border-bottom: 2px solid var(--saffron);
+      border-right: 2px solid var(--saffron);
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       DEFACED CARD
+    ===================================================== */
+    .defaced-card {
+      border-radius: var(--border-radius);
+      padding: 3rem 2.5rem 5rem;
+      text-align: center;
+      animation: fadeSlideUp 0.8s ease both;
+      position: relative;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Terminal header */
+    .terminal-header {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--neon-red);
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .breach-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--neon-red);
+      border-radius: 50%;
+      box-shadow: var(--glow-red);
+      animation: breach-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes breach-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(1.3); }
+    }
+
+    /* Logo */
+    .logo {
+      margin-bottom: 2rem;
+    }
+
+    .logo img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 3px solid var(--neon-cyan);
+      box-shadow: var(--glow-cyan), inset 0 0 30px rgba(0, 240, 255, 0.15);
+      animation: logoPulseDefaced 3s ease-in-out infinite;
+      filter: saturate(1.2) contrast(1.1);
+    }
+
+    @keyframes logoPulseDefaced {
+      0%, 100% { 
+        box-shadow: var(--glow-cyan), inset 0 0 30px rgba(0, 240, 255, 0.15);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 25px var(--neon-cyan), 0 0 60px rgba(0, 240, 255, 0.6), inset 0 0 40px rgba(0, 240, 255, 0.25);
+        transform: scale(1.05);
+      }
+    }
+
+    /* Warning section */
+    .warning-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .warning-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      color: var(--saffron);
+      text-shadow: var(--glow-saffron);
+      margin-bottom: 1rem;
+      animation: flickerWarning 3s linear infinite;
+      position: relative;
+    }
+
+    @keyframes flickerWarning {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+        text-shadow: var(--glow-saffron);
+      }
+      20%, 22%, 24%, 55% {
+        opacity: 0.6;
+        text-shadow: 0 0 4px var(--saffron);
+      }
+    }
+
+    .warning-subtitle {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .defaced-by {
+      font-family: var(--font-mono);
+      font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 0.05em;
+    }
+
+    /* Group name */
+    .group-name {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      color: var(--saffron);
+      text-shadow: var(--glow-saffron);
+      letter-spacing: 0.08em;
+      margin-bottom: 2rem;
+      animation: neonPulseSaffron 4s ease-in-out infinite;
+    }
+
+    @keyframes neonPulseSaffron {
+      0%, 100% {
+        text-shadow: var(--glow-saffron);
+        color: var(--saffron);
+      }
+      50% {
+        text-shadow: 0 0 15px var(--saffron), 0 0 35px rgba(255, 153, 51, 0.7);
+        color: #ffc08a;
+      }
+    }
+
+    /* Message box */
+    .message-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 153, 51, 0.3);
+      border-radius: var(--border-radius);
+      padding: 1.8rem;
+      margin: 2rem 0;
+      text-align: left;
+    }
+
+    .message-box p {
+      font-family: var(--font-body);
+      font-size: 1.08rem;
+      line-height: 1.7;
+      margin-bottom: 0.8rem;
+      color: var(--text-primary);
+    }
+
+    .message-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .security-warning {
+      color: var(--neon-red);
+      font-weight: 600;
+      text-shadow: var(--glow-red);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .security-warning::before {
+      content: '⚠';
+      font-size: 1.3em;
+    }
+
+    /* Section headings */
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin: 2.5rem 0 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .section-heading::before,
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--neon-cyan), transparent);
+      max-width: 80px;
+    }
+
+    /* Members list */
+    .members-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto 2rem;
+      max-width: 450px;
+    }
+
+    .members-list li {
+      font-family: var(--font-body);
+      font-size: 1.08rem;
+      font-weight: 500;
+      padding: 0.8rem 1rem 0.8rem 1.5rem;
+      margin: 0.8rem 0;
+      color: var(--text-primary);
+      background: rgba(0, 255, 140, 0.02);
+      border-left: 3px solid var(--neon-cyan);
+      border-radius: 0 4px 4px 0;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .members-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background: rgba(0, 240, 255, 0.1);
+      transition: width 0.4s ease;
+      z-index: -1;
+    }
+
+    .members-list li:hover {
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      transform: translateX(8px);
+      border-left-color: var(--saffron);
+    }
+
+    .members-list li:hover::before {
+      width: 100%;
+    }
+
+    /* Links section */
+    .links-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto 2rem;
+      max-width: 450px;
+    }
+
+    .links-list li {
+      margin: 1rem 0;
+    }
+
+    .links-list a {
+      font-family: var(--font-body);
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: var(--saffron);
+      text-decoration: none;
+      text-shadow: var(--glow-saffron);
+      padding: 0.8rem 1.5rem;
+      display: inline-block;
+      border: 1px solid var(--saffron);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.05em;
+    }
+
+    .links-list a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--saffron);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .links-list a:hover {
+      color: var(--neon-cyan);
+      border-color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      transform: translateY(-3px);
+    }
+
+    .links-list a:hover::before {
+      opacity: 0.12;
+    }
+
+    .links-list a::after {
+      content: '→';
+      margin-left: 0.5rem;
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    .links-list a:hover::after {
+      transform: translateX(4px);
+    }
+
+    /* ASCII Art Divider */
+    .ascii-divider {
+      font-family: var(--font-mono);
+      font-size: clamp(0.4rem, 0.8vw, 0.6rem);
+      line-height: 1.2;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      margin: 2rem 0;
+      white-space: pre;
+      opacity: 0.5;
+      overflow-x: auto;
+    }
+
+    /* Footer */
+    footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem 2rem;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      background: rgba(0, 0, 0, 0.3);
+      border-top: 1px solid rgba(255, 153, 51, 0.2);
+    }
+
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Glitch effect */
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch::before {
+      color: var(--neon-cyan);
+      animation: glitch1 0.5s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 40%, 0 40%);
+      transform: translate(-2px, 0);
+    }
+
+    .glitch::after {
+      color: var(--neon-red);
+      animation: glitch2 0.5s infinite;
+      clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+      transform: translate(2px, 0);
+    }
+
+    @keyframes glitch1 {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitch2 {
+      0% { transform: translate(0); }
+      20% { transform: translate(2px, -2px); }
+      40% { transform: translate(2px, 2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(-2px, 2px); }
+      100% { transform: translate(0); }
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 768px) {
+      body { padding: 1rem 0.5rem; }
+      .defaced-card { padding: 2rem 1.5rem 4rem; }
+      .logo img { width: 110px; height: 110px; }
+      .warning-title { font-size: 2rem; }
+      .message-box { padding: 1.2rem; }
+      .members-list, .links-list { max-width: 100%; }
+      footer { padding: 1rem; }
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .defaced-card { padding: 1.5rem 1rem 3.5rem; }
+      .logo img { width: 90px; height: 90px; }
+      .terminal-header { font-size: 0.6rem; gap: 0.5rem; }
+      .warning-title { font-size: 1.8rem; letter-spacing: 0.1em; }
+      .message-box { padding: 1rem; }
+      .message-box p { font-size: 0.95rem; }
+      .members-list li { font-size: 0.95rem; padding: 0.6rem 0.8rem 0.6rem 1.2rem; }
+      .links-list a { font-size: 0.95rem; padding: 0.6rem 1.2rem; }
+      .ascii-divider { font-size: 0.35rem; }
+    }
+
+    /* =====================================================
+       ACCESSIBILITY
+    ===================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--neon-cyan);
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Background -->
+  <canvas id="matrixCanvas" aria-hidden="true"></canvas>
+  <div class="bg-canvas" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- Defaced Container -->
+  <div class="defaced-container">
+
+    <div class="defaced-card glass" role="main">
+      <div class="corner-br" aria-hidden="true"></div>
+
+      <!-- Terminal Header -->
+      <div class="terminal-header" aria-hidden="true">
+        <span>[ SECURITY BREACH DETECTED ]</span>
+        <span class="breach-indicator"></span>
+        <span>SYSTEM COMPROMISED</span>
+      </div>
+
+      <!-- Logo -->
+      <div class="logo">
+        <img 
+          src="https://raw.githubusercontent.com/ScorpionHackingGroup/Images/main/ScorpionHackingGroup_Logo.jpg" 
+          alt="Scorpion Hacking Group Logo"
+          width="140"
+          height="140"
+        >
+      </div>
+
+      <!-- Warning Section -->
+      <div class="warning-section">
+        <h1 class="warning-title glitch" data-text="WARNING!">WARNING!</h1>
+        <p class="warning-subtitle">This website has been defaced by</p>
+        <p class="defaced-by">Scorpion Yug • Member of Scorpion Hacking Group</p>
+      </div>
+
+      <!-- Group Name -->
+      <h2 class="group-name">Scorpion Hacking Group</h2>
+
+      <!-- Message Box -->
+      <div class="message-box">
+        <p>Hello admin, your website has been compromised. But don't worry — we haven't changed anything on your website.</p>
+        <p class="security-warning">Improve Your Security</p>
+      </div>
+
+      <!-- ASCII Divider -->
+      <div class="ascii-divider" aria-hidden="true">
+    ═══════════════════════════════════════════════════
+    ░░░░░░░░░░░░░░░ BREACH REPORT ░░░░░░░░░░░░░░░
+    ═══════════════════════════════════════════════════
+      </div>
+
+      <!-- Team Members -->
+      <h3 class="section-heading">Our Team Members</h3>
+      <ul class="members-list">
+        <li>𝞓 𝗝 𝞓 𝙔 &lt;®&gt; 𝓖𝓸𝓪𝓽</li>
+        <li>𝐇ɪᴛᴇsʜ «𖤍» 𝐆ᴜʀᴜ ┗𖠌┑</li>
+        <li>Adil</li>
+      </ul>
+
+      <!-- Connect Links -->
+      <h3 class="section-heading">Connect With Us</h3>
+      <ul class="links-list">
+        <li>
+          <a href="https://t.me/ScorpionHackingGroup" target="_blank" rel="noopener noreferrer">
+            Telegram Channel
+          </a>
+        </li>
+        <li>
+          <a href="https://t.me/ScorpionHackingGroupChat" target="_blank" rel="noopener noreferrer">
+            Telegram Group
+          </a>
+        </li>
+        <li>
+          <a href="https://t.me/Scorpion_Yug" target="_blank" rel="noopener noreferrer">
+            Group Owner/Head
+          </a>
+        </li>
+        <li>
+          <a href="https://t.me/ScorpionYug" target="_blank" rel="noopener noreferrer">
+            Scorpion Yug - About
+          </a>
+        </li>
+      </ul>
+
+      <!-- Footer -->
+      <footer>
+        <p class="footer-text">© 2025 Scorpion Hacking Group · All Rights Reserved</p>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <script>
+    /* ==============================================
+       MATRIX RAIN
+    ============================================== */
+    (function () {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+      const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF><!={}[]#@%';
+      let cols, drops;
+
+      function init() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols  = Math.floor(canvas.width / 16);
+        drops = Array(cols).fill(1);
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(2, 12, 8, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Alternate between saffron and cyan
+        const useOrange = Math.random() > 0.7;
+        ctx.fillStyle = useOrange ? '#FF9933' : '#00ff8c';
+        ctx.font = '14px Share Tech Mono, monospace';
+        
+        drops.forEach((y, i) => {
+          const char = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(char, i * 16, y * 16);
+          if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        });
+      }
+
+      init();
+      setInterval(draw, 50);
+      window.addEventListener('resize', init);
+    })();
+
+    /* ==============================================
+       CUSTOM CURSOR
+    ============================================== */
+    const cursor     = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+
+    if (cursor && cursorRing) {
+      let mouseX = 0, mouseY = 0;
+      let ringX  = 0, ringY  = 0;
+
+      document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top  = mouseY + 'px';
+      });
+
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        cursorRing.style.left = ringX + 'px';
+        cursorRing.style.top  = ringY + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      document.querySelectorAll('a, button, .members-list li').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.classList.add('hovered');
+          cursorRing.classList.add('hovered');
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.classList.remove('hovered');
+          cursorRing.classList.remove('hovered');
+        });
+      });
+    }
+
+    /* ==============================================
+       GLITCH DATA ATTRIBUTE
+    ============================================== */
+    document.querySelectorAll('.glitch').forEach(el => {
+      if (!el.getAttribute('data-text')) {
+        el.setAttribute('data-text', el.textContent);
+      }
+    });
+
+    /* ==============================================
+       RANDOM CARD FLICKER
+    ============================================== */
+    function randomFlicker() {
+      const card = document.querySelector('.defaced-card');
+      if (!card) return;
+      card.style.opacity = '0.92';
+      setTimeout(() => { card.style.opacity = '1'; }, 80);
+      setTimeout(randomFlicker, 5000 + Math.random() * 7000);
+    }
+    setTimeout(randomFlicker, 4000);
+
+    /* ==============================================
+       BREACH INDICATOR RANDOM SPEED
+    ============================================== */
+    const indicator = document.querySelector('.breach-indicator');
+    if (indicator) {
+      setInterval(() => {
+        const speed = (Math.random() * 1.5 + 1) + 's';
+        indicator.style.animationDuration = speed;
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>
