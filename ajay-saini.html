@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajay Saini — Fabrication Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --canvas: #FBFBFA;
+      --surface: #FFFFFF;
+      --border: #EAEAEA;
+      --text-primary: #111111;
+      --text-secondary: #787774;
+      --accent-btn: #111111;
+      --pale-red: #FDEBEC;
+      --pale-red-text: #9F2F2D;
+      --pale-blue: #E1F3FE;
+      --pale-blue-text: #1F6C9F;
+      --pale-green: #EDF3EC;
+      --pale-green-text: #346538;
+      --pale-yellow: #FBF3DB;
+      --pale-yellow-text: #956400;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
+      background: var(--canvas);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .serif { font-family: 'Playfair Display', serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Ambient blob */
+    .ambient-blob {
+      position: fixed;
+      top: -10%;
+      right: -10%;
+      width: 55vw;
+      height: 55vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(251,243,219,0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: blobDrift 25s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    @keyframes blobDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-3vw, 4vw) scale(1.06); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Staggered children */
+    .stagger > * { opacity: 0; transform: translateY(12px); transition: opacity 600ms cubic-bezier(0.16,1,0.3,1), transform 600ms cubic-bezier(0.16,1,0.3,1); }
+    .stagger.visible > *:nth-child(1) { opacity:1;transform:translateY(0);transition-delay:0ms; }
+    .stagger.visible > *:nth-child(2) { opacity:1;transform:translateY(0);transition-delay:80ms; }
+    .stagger.visible > *:nth-child(3) { opacity:1;transform:translateY(0);transition-delay:160ms; }
+    .stagger.visible > *:nth-child(4) { opacity:1;transform:translateY(0);transition-delay:240ms; }
+    .stagger.visible > *:nth-child(5) { opacity:1;transform:translateY(0);transition-delay:320ms; }
+    .stagger.visible > *:nth-child(6) { opacity:1;transform:translateY(0);transition-delay:400ms; }
+
+    /* Card hover */
+    .bento-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: box-shadow 200ms ease, transform 200ms ease;
+    }
+    .bento-card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transform: translateY(-1px);
+    }
+
+    /* Tag */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3em;
+      border-radius: 9999px;
+      padding: 0.2em 0.75em;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* CTA button */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      background: var(--accent-btn);
+      color: #fff;
+      border-radius: 6px;
+      padding: 0.7em 1.4em;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 200ms ease, transform 100ms ease;
+      border: none;
+      cursor: pointer;
+    }
+    .cta-btn:hover { background: #333; }
+    .cta-btn:active { transform: scale(0.98); }
+
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.7em 1.4em;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 200ms ease, transform 100ms ease;
+      cursor: pointer;
+    }
+    .ghost-btn:hover { background: #f5f5f5; }
+    .ghost-btn:active { transform: scale(0.98); }
+
+    /* Divider */
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(251,251,250,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Contact icon link */
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75em;
+      padding: 1em 1.25em;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: box-shadow 200ms ease, transform 200ms ease;
+      font-size: 0.9rem;
+    }
+    .contact-link:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transform: translateY(-1px);
+    }
+
+    /* Hero geometric line */
+    .geo-line {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38%;
+      opacity: 0.045;
+      pointer-events: none;
+    }
+
+    /* Subtle radial glow behind hero text */
+    .hero-glow {
+      position: absolute;
+      left: -5%;
+      top: 30%;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(253,235,236,0.5) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @media (max-width: 768px) {
+      .geo-line { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Ambient background blob -->
+<div class="ambient-blob" aria-hidden="true"></div>
+
+<!-- ── NAV ─────────────────────────────────────────────── -->
+<nav>
+  <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+    <span class="serif font-semibold text-base tracking-tight">Ajay Saini</span>
+    <div class="flex items-center gap-3">
+      <span class="tag" style="background:var(--pale-green);color:var(--pale-green-text);">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--pale-green-text);display:inline-block;"></span>
+        Available
+      </span>
+      <a href="https://wa.me/918278541914" target="_blank" rel="noopener" class="cta-btn" style="font-size:0.8rem;padding:0.55em 1.1em;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.2 2 2 0 012.03 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────── -->
+<section class="relative overflow-hidden" style="padding: clamp(5rem,12vw,8rem) 0 clamp(4rem,10vw,7rem);">
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <!-- geometric SVG lines -->
+  <svg class="geo-line" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="200" cy="250" r="190" stroke="#111111" stroke-width="0.8"/>
+    <circle cx="200" cy="250" r="140" stroke="#111111" stroke-width="0.5"/>
+    <circle cx="200" cy="250" r="90" stroke="#111111" stroke-width="0.4"/>
+    <line x1="10" y1="250" x2="390" y2="250" stroke="#111111" stroke-width="0.4"/>
+    <line x1="200" y1="60" x2="200" y2="440" stroke="#111111" stroke-width="0.4"/>
+    <line x1="55" y1="55" x2="345" y2="445" stroke="#111111" stroke-width="0.3"/>
+    <line x1="345" y1="55" x2="55" y2="445" stroke="#111111" stroke-width="0.3"/>
+  </svg>
+
+  <div class="relative z-10 max-w-5xl mx-auto px-6">
+    <div class="stagger" style="max-width: 36rem;">
+      <div class="mb-6 flex items-center gap-3">
+        <span class="tag" style="background:var(--pale-blue);color:var(--pale-blue-text);">Fabrication Expert</span>
+        <span class="tag" style="background:var(--pale-yellow);color:var(--pale-yellow-text);">3+ Years</span>
+      </div>
+
+      <h1 style="font-size:clamp(2.8rem,7vw,5rem);color:var(--text-primary);" class="mb-5">
+        Ajay<br/>
+        <em style="font-style:italic;font-weight:400;">Saini</em>
+      </h1>
+
+      <p style="font-size:clamp(1rem,2vw,1.15rem);color:var(--text-secondary);line-height:1.7;" class="mb-8">
+        Professional fabrication services across Haryana &amp; Rajasthan.<br/>
+        Structural work, custom metalwork, and industrial solutions built to last.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <a href="https://wa.me/918278541914" target="_blank" rel="noopener" class="cta-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.2 2 2 0 012.03 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Get a Quote
+        </a>
+        <a href="tel:+918278541914" class="ghost-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.2 2 2 0 012.03 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Call Now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider max-w-5xl mx-auto" style="margin-left:auto;margin-right:auto;max-width:80rem;padding:0 1.5rem;" />
+
+<!-- ── STATS ───────────────────────────────────────────── -->
+<section style="padding: clamp(3.5rem,8vw,5rem) 0;">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="stagger" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10rem),1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="background:var(--surface);padding:clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,3vw,2rem);">
+        <p class="serif" style="font-size:clamp(2rem,5vw,3rem);font-weight:600;line-height:1;">3+</p>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.4em;">Years Experience</p>
+      </div>
+      <div style="background:var(--surface);padding:clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,3vw,2rem);">
+        <p class="serif" style="font-size:clamp(2rem,5vw,3rem);font-weight:600;line-height:1;">19</p>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.4em;">Years Old</p>
+      </div>
+      <div style="background:var(--surface);padding:clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,3vw,2rem);">
+        <p class="serif" style="font-size:clamp(2rem,5vw,3rem);font-weight:600;line-height:1;">2</p>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.4em;">States Covered</p>
+      </div>
+      <div style="background:var(--surface);padding:clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,3vw,2rem);">
+        <p class="serif" style="font-size:clamp(2rem,5vw,3rem);font-weight:600;line-height:1;">∞</p>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.4em;">Projects Done</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BENTO SERVICES ─────────────────────────────────── -->
+<section style="padding: clamp(2rem,6vw,4rem) 0 clamp(4rem,10vw,6rem);">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="reveal mb-12">
+      <span class="tag mb-4" style="background:var(--pale-yellow);color:var(--pale-yellow-text);">What I Do</span>
+      <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);margin-top:0.75rem;">Services &amp; Expertise</h2>
+    </div>
+
+    <!-- Bento grid -->
+    <div class="stagger" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1rem;">
+
+      <div class="bento-card" style="padding:clamp(1.5rem,4vw,2rem);grid-column:span 1;">
+        <div style="width:2.5rem;height:2.5rem;background:var(--pale-red);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9F2F2D" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        </div>
+        <h3 style="font-size:1.15rem;margin-bottom:0.5rem;" class="serif">Structural Fabrication</h3>
+        <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">Custom structural steel work for commercial, industrial, and residential projects built to specification.</p>
+      </div>
+
+      <div class="bento-card" style="padding:clamp(1.5rem,4vw,2rem);">
+        <div style="width:2.5rem;height:2.5rem;background:var(--pale-blue);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F6C9F" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3 style="font-size:1.15rem;margin-bottom:0.5rem;" class="serif">Custom Metalwork</h3>
+        <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">Gates, grilles, railings, and bespoke metal components crafted with precision and care.</p>
+      </div>
+
+      <div class="bento-card" style="padding:clamp(1.5rem,4vw,2rem);">
+        <div style="width:2.5rem;height:2.5rem;background:var(--pale-green);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#346538" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h3 style="font-size:1.15rem;margin-bottom:0.5rem;" class="serif">Industrial Installations</h3>
+        <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">On-site fabrication and installation for factories, warehouses, and industrial setups.</p>
+      </div>
+
+      <div class="bento-card" style="padding:clamp(1.5rem,4vw,2rem);">
+        <div style="width:2.5rem;height:2.5rem;background:var(--pale-yellow);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#956400" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3 style="font-size:1.15rem;margin-bottom:0.5rem;" class="serif">Fast Turnaround</h3>
+        <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">Committed to on-time delivery across all project scales, from small jobs to large contracts.</p>
+      </div>
+
+      <!-- Wide service area card -->
+      <div class="bento-card" style="padding:clamp(1.5rem,4vw,2rem);grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:2rem;background:var(--canvas);">
+        <div style="flex:1;min-width:min(100%,14rem);">
+          <span class="tag mb-3" style="background:var(--pale-green);color:var(--pale-green-text);">Service Area</span>
+          <h3 class="serif" style="font-size:1.4rem;margin-top:0.5rem;">All over Haryana &amp; Rajasthan</h3>
+          <p style="color:var(--text-secondary);font-size:0.875rem;margin-top:0.5rem;line-height:1.65;">Travelling to your site — no job is too remote.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.6rem;">
+          <span class="tag" style="background:var(--surface);color:var(--text-secondary);border:1px solid var(--border);">Haryana</span>
+          <span class="tag" style="background:var(--surface);color:var(--text-secondary);border:1px solid var(--border);">Rajasthan</span>
+          <span class="tag" style="background:var(--surface);color:var(--text-secondary);border:1px solid var(--border);">On-site</span>
+          <span class="tag" style="background:var(--surface);color:var(--text-secondary);border:1px solid var(--border);">Mobile Service</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" style="max-width:80rem;margin:0 auto;" />
+
+<!-- ── WHY CHOOSE ME ───────────────────────────────────── -->
+<section style="padding: clamp(4rem,10vw,6rem) 0;">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="reveal mb-10">
+      <span class="tag mb-4" style="background:var(--pale-red);color:var(--pale-red-text);">Why Work With Me</span>
+      <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);margin-top:0.75rem;">Straightforward. Reliable. Skilled.</h2>
+    </div>
+
+    <div class="stagger" style="display:grid;gap:0;">
+      <div style="display:grid;grid-template-columns:clamp(2rem,5vw,3rem) 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;border-bottom:1px solid var(--border);">
+        <div class="mono" style="color:var(--text-secondary);font-size:0.8rem;padding-top:0.2em;">01</div>
+        <div>
+          <h3 class="serif" style="font-size:1.1rem;margin-bottom:0.4rem;">Started young, grew fast</h3>
+          <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">At 19 with over 3 years of hands-on experience, the work speaks for itself. Skills earned in the field, not just on paper.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:clamp(2rem,5vw,3rem) 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;border-bottom:1px solid var(--border);">
+        <div class="mono" style="color:var(--text-secondary);font-size:0.8rem;padding-top:0.2em;">02</div>
+        <div>
+          <h3 class="serif" style="font-size:1.1rem;margin-bottom:0.4rem;">Wide coverage, no excuses</h3>
+          <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">Covering the entire span of Haryana and Rajasthan. Wherever your project is, I'll be there.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:clamp(2rem,5vw,3rem) 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;border-bottom:1px solid var(--border);">
+        <div class="mono" style="color:var(--text-secondary);font-size:0.8rem;padding-top:0.2em;">03</div>
+        <div>
+          <h3 class="serif" style="font-size:1.1rem;margin-bottom:0.4rem;">Direct communication</h3>
+          <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">No middlemen. You talk directly with the person doing the work — clear timelines, honest pricing, no surprises.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:clamp(2rem,5vw,3rem) 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;">
+        <div class="mono" style="color:var(--text-secondary);font-size:0.8rem;padding-top:0.2em;">04</div>
+        <div>
+          <h3 class="serif" style="font-size:1.1rem;margin-bottom:0.4rem;">Quality that holds up</h3>
+          <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.65;">Every weld, joint, and cut is done with care. Fabrication built to meet real-world demands, not just look good on delivery.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" style="max-width:80rem;margin:0 auto;" />
+
+<!-- ── CONTACT ─────────────────────────────────────────── -->
+<section style="padding: clamp(4rem,10vw,6rem) 0;">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="reveal mb-12">
+      <span class="tag mb-4" style="background:var(--pale-blue);color:var(--pale-blue-text);">Get In Touch</span>
+      <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);margin-top:0.75rem;">Ready to start a project?</h2>
+      <p style="color:var(--text-secondary);margin-top:0.75rem;font-size:0.95rem;max-width:32rem;line-height:1.7;">Reach out through any channel below. I respond quickly and we can discuss your requirements right away.</p>
+    </div>
+
+    <div class="stagger" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:0.75rem;">
+
+      <a href="tel:+918278541914" class="contact-link">
+        <div style="width:2.2rem;height:2.2rem;background:var(--pale-green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#346538" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.2 2 2 0 012.03 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.15em;">Phone</p>
+          <p class="mono" style="font-size:0.875rem;">+91 8278541914</p>
+        </div>
+      </a>
+
+      <a href="mailto:AjaySaini@Gmail.com" class="contact-link">
+        <div style="width:2.2rem;height:2.2rem;background:var(--pale-blue);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F6C9F" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.15em;">Email</p>
+          <p class="mono" style="font-size:0.875rem;">AjaySaini@Gmail.com</p>
+        </div>
+      </a>
+
+      <a href="https://wa.me/918278541914" target="_blank" rel="noopener" class="contact-link">
+        <div style="width:2.2rem;height:2.2rem;background:var(--pale-green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#346538" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.15em;">WhatsApp</p>
+          <p style="font-size:0.875rem;">Chat directly</p>
+        </div>
+      </a>
+
+      <a href="https://t.me/Aja_y_R" target="_blank" rel="noopener" class="contact-link">
+        <div style="width:2.2rem;height:2.2rem;background:var(--pale-blue);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F6C9F" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.15em;">Telegram</p>
+          <p class="mono" style="font-size:0.875rem;">@Aja_y_R</p>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- CTA block -->
+    <div class="reveal bento-card" style="margin-top:1rem;padding:clamp(2rem,5vw,3rem);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.5rem;background:var(--text-primary);">
+      <div>
+        <h3 class="serif" style="font-size:clamp(1.2rem,3vw,1.6rem);color:#fff;">Let's build something together.</h3>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.875rem;margin-top:0.4rem;">Reach out today and get a response within the day.</p>
+      </div>
+      <a href="https://wa.me/918278541914" target="_blank" rel="noopener" style="background:#fff;color:#111;border-radius:6px;padding:0.75em 1.5em;font-size:0.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:0.5em;transition:opacity 150ms ease;flex-shrink:0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        WhatsApp Me
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer style="border-top:1px solid var(--border);padding:clamp(1.5rem,4vw,2rem) 0;">
+  <div class="max-w-5xl mx-auto px-6 flex flex-wrap items-center justify-between gap-3">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <span class="serif" style="font-weight:600;font-size:0.9rem;">Ajay Saini</span>
+      <span style="color:var(--border);">|</span>
+      <span style="color:var(--text-secondary);font-size:0.8rem;">Fabrication Services</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.4em;color:var(--text-secondary);font-size:0.78rem;">
+      <span>Developed by</span>
+      <a href="https://t.me/Scorpion_Yug" target="_blank" rel="noopener" style="color:var(--text-primary);font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);transition:border-color 150ms ease;" onmouseover="this.style.borderColor='#111'" onmouseout="this.style.borderColor='var(--border)'">Scorpion Yug</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
